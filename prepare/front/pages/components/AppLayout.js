@@ -27,7 +27,7 @@ const AppLayout = ({ children }) => {
             <Row gutter={8}>
 
                 <Col xs={24} md={6}>
-                    {isLoggedin ? <UserProfile /> : <UserLoginForm />}
+                    {isLoggedin ? <UserProfile setIsLoggedin={setIsLoggedin} /> : <UserLoginForm setIsLoggedin={setIsLoggedin} />}
                 </Col >
                 <Col xs={24} md={12}>
                     {children}

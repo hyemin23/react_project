@@ -3,11 +3,8 @@ import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 import styled from "styled-components";
 
-const ButtonWrapper = styled.div`
-    margin-top : 10px;
-`;
 
-function UserLoginForm() {
+function UserLoginForm({ setIsLoggedin }) {
 
     const [userInfo, setUserInfo] = useState({
         user_id: ""
@@ -30,8 +27,13 @@ function UserLoginForm() {
         }
     }, [userInfo]);
 
+    const onSubmit = useCallback(() => {
+        setIsLoggedin(true);
+    }, [userInfo])
+
+
     return (
-        <Form>
+        <FormWrapper onFinish={onSubmit}>
             <div>
                 <label htmlFor="user_id">ID</label>
                 <br />
@@ -47,8 +49,17 @@ function UserLoginForm() {
                 >Login</Button>
                 <Link href="/signup"><a><Button type="">회원가입</Button></a></Link>
             </ButtonWrapper>
-        </Form>
+        </FormWrapper>
     )
 }
+
+
+const ButtonWrapper = styled.div`
+    margin-top : 10px;
+`;
+
+const FormWrapper = styled(Form)`
+    padding : 10px;
+`;
 
 export default UserLoginForm;
