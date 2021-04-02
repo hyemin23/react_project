@@ -4,16 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hyemin23/react_project.git"
   },
-  "author": "",
+  "author": "Hyemin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hyemin23/react_project/issues"
   },
-  "homepage": "https://github.com/hyemin23/react_project#readme"
+  "homepage": "https://github.com/hyemin23/react_project#readme",
+  "dependencies": {
+    "next": "^10.1.2"
+  }
 }
