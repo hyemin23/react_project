@@ -1,6 +1,11 @@
 import React, { useCallback, useState } from 'react'
 import { Button, Form, Input } from "antd";
 import Link from 'next/link';
+import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+    margin-top : 10px;
+`;
 
 function UserLoginForm() {
 
@@ -34,16 +39,16 @@ function UserLoginForm() {
                 <label htmlFor="user_password">Password</label>
                 <Input type="password" name="user_password" value={userInfo.user_pw} required onChange={onChange} />
             </div>
-            <div>
+            <ButtonWrapper>
                 <Button
                     type="primary"
                     htmlType="submit"
                     loading={false}
                 >Login</Button>
                 <Link href="/signup"><a><Button type="">회원가입</Button></a></Link>
-            </div>
+            </ButtonWrapper>
         </Form>
     )
 }
 
-export default UserLoginForm
+export default UserLoginForm;
