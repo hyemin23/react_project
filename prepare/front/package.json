@@ -17,9 +17,12 @@
   },
   "homepage": "https://github.com/hyemin23/react_project#readme",
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
+    "antd": "^4.15.0",
     "next": "^10.1.2",
     "prop-types": "^15.7.2",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "styled-components": "^5.2.3"
   },
   "devDependencies": {
     "eslint": "^7.23.0",

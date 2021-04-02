@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { Menu, Input, Row, Col } from "antd";
+import UserProfile from './UserProfile';
+import UserLoginForm from "./UserLoginForm";
+
+const { Search } = Input;
 
 const AppLayout = ({ children }) => {
-
+    const [isLoggedin, setIsLoggedin] = useState(false);
     return (
         <div>
-            <div>
-                <Link href="/"><a>노드버드</a></Link>
-                <Link href="/profile"><a>프로필</a></Link>
-                <Link href="/signup"><a>회원가입</a></Link>
-            </div>
-            { children}
+            <Menu mode="horizontal">
+                <Menu.Item key="home">
+                    <Link href="/"><a>노드버드</a></Link>
+                </Menu.Item>
+                <Menu.Item key="profile">
+                    <Link href="/profile"><a>프로필</a></Link>
+                </Menu.Item>
+                <Menu.Item>
+                    <Search enterButton style={{ verticalAlign: "middle" }} />
+                </Menu.Item>
+                <Link href="/signup"><a>회원  가입</a></Link>
+            </Menu>
+            <Row gutter={8}>
+
+                <Col xs={24} md={6}>
+                    {isLoggedin ? <UserProfile /> : <UserLoginForm />}
+                </Col >
+                <Col xs={24} md={12}>
+                    {children}
+                </Col>
+                <Col xs={24} md={6}>
+                    <a href="https://2ham-s.tistory.com/" target="_blank" rel="noreferrer noopener">Made by Hyemin</a>
+                </Col>
+            </Row>
+
+
+
         </div>
 
     )
