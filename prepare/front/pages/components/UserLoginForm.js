@@ -2,8 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 import styled from "styled-components";
-
-
+import PropTypes from "prop-types";
 function UserLoginForm({ setIsLoggedin }) {
 
     const [userInfo, setUserInfo] = useState({
@@ -14,16 +13,13 @@ function UserLoginForm({ setIsLoggedin }) {
     const onChange = useCallback((e) => {
         const { name, value } = e.target;
         if (name === "user_id") {
-            setUserInfo({
-                user_id: value,
-                user_pw: userInfo.user_pw
-            });
+            setUserInfo(prev => ({
+                ...prev, user_id: value
+            }));
         } else {
-            setUserInfo({
-                user_id: userInfo.user_id,
-                user_pw: value
-            });
-
+            setUserInfo(prev => ({
+                ...prev, user_pw: value
+            }));
         }
     }, [userInfo]);
 
@@ -62,4 +58,7 @@ const FormWrapper = styled(Form)`
     padding : 10px;
 `;
 
+UserLoginForm.propTypes = {
+    setIsLoggedin: PropTypes.func.isRequired
+}
 export default UserLoginForm;
