@@ -22,10 +22,10 @@ const AppLayout = ({ children }) => {
                 <Menu.Item>
                     <SearchInput enterButton style={{ verticalAlign: "middle" }} />
                 </Menu.Item>
-                <Link href="/signup"><a>회원  가입</a></Link>
+                <Link href="/signup"><a>회원가입</a></Link>
             </Menu>
-            <Row gutter={8}>
 
+            <Row gutter={8}>
                 <Col xs={24} md={6}>
                     {isLoggedin ? <UserProfile setIsLoggedin={setIsLoggedin} /> : <UserLoginForm setIsLoggedin={setIsLoggedin} />}
                 </Col >

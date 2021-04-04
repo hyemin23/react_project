@@ -3,7 +3,7 @@ import Head from "next/head";
 import AppLayout from "./components/AppLayout";
 
 
-const Profile = () => {
+const Signup = () => {
     return (
         <>
             <Head>
@@ -15,4 +15,4 @@ const Profile = () => {
     )
 }
 
-export default Profile;
+export default Signup;
