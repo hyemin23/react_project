@@ -5,11 +5,12 @@ import { Menu, Input, Row, Col } from "antd";
 import UserProfile from './UserProfile';
 import UserLoginForm from "./UserLoginForm";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 const { Search } = Input;
 
-
 const AppLayout = ({ children }) => {
-    const [isLoggedin, setIsLoggedin] = useState(false);
+    //const [isLoggedin, setIsLoggedin] = useState(false);
+    const isLoggedIn = useSelector(state => state.user.isLoggedIn)
     return (
         <div>
             <Menu mode="horizontal">
@@ -27,7 +28,7 @@ const AppLayout = ({ children }) => {
 
             <Row gutter={8}>
                 <Col xs={24} md={6}>
-                    {isLoggedin ? <UserProfile setIsLoggedin={setIsLoggedin} /> : <UserLoginForm setIsLoggedin={setIsLoggedin} />}
+                    {isLoggedIn ? <UserProfile /> : <UserLoginForm />}
                 </Col >
                 <Col xs={24} md={12}>
                     {children}

@@ -41,8 +41,6 @@ const Signup = () => {
         setTerm(e.target.checked);
     };
 
-
-
     return (
         <>
             <Head>

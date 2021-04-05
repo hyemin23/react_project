@@ -3,8 +3,12 @@ import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 import styled from "styled-components";
 import PropTypes from "prop-types";
-function UserLoginForm({ setIsLoggedin }) {
+import { useDispatch } from "react-redux";
+import { loginAction } from "../reducers/user";
 
+function UserLoginForm() {
+
+    const dispatch = useDispatch();
     const [userInfo, setUserInfo] = useState({
         user_id: ""
         , user_pw: ""
@@ -24,7 +28,9 @@ function UserLoginForm({ setIsLoggedin }) {
     }, [userInfo]);
 
     const onSubmit = useCallback(() => {
-        setIsLoggedin(true);
+        dispatch(loginAction({
+            userInfo
+        }));
     }, [userInfo])
 
 

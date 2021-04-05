@@ -2,6 +2,7 @@ import React from "react";
 import ProtoTypes from "prop-types"
 import 'antd/dist/antd.css';
 import Head from "next/head";
+import wrapper from "./store/configureStore";
 
 
 
@@ -27,4 +28,4 @@ App.protoTypes = {
     Component: ProtoTypes.elementType.isRequired,
 }
 
-export default App;
+export default wrapper.withRedux(App);
