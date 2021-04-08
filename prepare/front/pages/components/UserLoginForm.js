@@ -64,7 +64,4 @@ const FormWrapper = styled(Form)`
     padding : 10px;
 `;
 
-UserLoginForm.propTypes = {
-    setIsLoggedin: PropTypes.func.isRequired
-}
 export default UserLoginForm;

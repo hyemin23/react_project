@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from './UserProfile';
 import UserLoginForm from "./UserLoginForm";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
+import { Global } from './imageZoom/style';
 const { Search } = Input;
 
 const AppLayout = ({ children }) => {
@@ -26,7 +27,10 @@ const AppLayout = ({ children }) => {
                 <Link href="/signup"><a>회원가입</a></Link>
             </Menu>
 
+
             <Row gutter={8}>
+
+
                 <Col xs={24} md={6}>
                     {isLoggedIn ? <UserProfile /> : <UserLoginForm />}
                 </Col >
@@ -36,6 +40,7 @@ const AppLayout = ({ children }) => {
                 <Col xs={24} md={6}>
                     <a href="https://2ham-s.tistory.com/" target="_blank" rel="noreferrer noopener">Made by Hyemin</a>
                 </Col>
+
             </Row>
 
 
@@ -54,6 +59,5 @@ AppLayout.prototype = {
 const SearchInput = styled(Search)`
     vertical-align : "middle";
 `;
-
 
 export default AppLayout;

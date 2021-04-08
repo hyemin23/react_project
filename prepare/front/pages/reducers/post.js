@@ -5,7 +5,7 @@ export const init = {
             id: 1,
             nickname: '제로초',
         },
-        content: '첫 번째 게시글',
+        content: '첫 번째 게시글,갓데밋, #갓데밋,#갓쿠,#렌 고 투#ㅋ',
         Images: [{
             src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
         }, {
@@ -38,17 +38,22 @@ export const addPost = {
 }
 
 const dummyPost = {
-    id: 2
-    , content: "더미 포스트입니다."
+    id: 2,
+    content: '더미데이터입니다.',
+    User: {
+        id: 1,
+        nickname: '제로초',
+    },
+    Images: [],
+    Comments: [],
 };
-
 
 const reducer = (state = init, action) => {
     switch (action.type) {
         case ADD_POST:
             return {
                 ...state,
-                mainPost: [dummyPost, ...state.mainPosts], //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
+                mainPosts: [dummyPost, ...state.mainPosts], //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
                 postAdded: true
             }
         default:

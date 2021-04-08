@@ -3,7 +3,7 @@ import ProtoTypes from "prop-types"
 import 'antd/dist/antd.css';
 import Head from "next/head";
 import wrapper from "./store/configureStore";
-
+import withReduxSaga from "next-redux-saga";
 
 
 
@@ -28,4 +28,4 @@ App.protoTypes = {
     Component: ProtoTypes.elementType.isRequired,
 }
 
-export default wrapper.withRedux(App);
+export default wrapper.withRedux(withReduxSaga(App));
