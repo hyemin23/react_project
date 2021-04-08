@@ -8,26 +8,19 @@ export const init = {
 }
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
-
-
-export const logOutAction = (data) => {
-    return {
-        type: "LOG_OUT"
-    }
-}
+export const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
 
 //리듀서는 함수임
 //이전상태와 action을 통해 => 다음 상태를 만들언는 것.
 const reducer = (state = init, action) => {
     switch (action.type) {
-        case "LOG_IN_REQUEST":
+        case LOG_IN_REQUEST:
             return {
                 ...state
                 , isLoggingIn: true
             };
 
         case "LOG_IN_SUCCESS":
-            console.log("SUCCESS들어옴");
             return {
                 ...state
                 , isLoggingIn: false
@@ -37,13 +30,25 @@ const reducer = (state = init, action) => {
                     , nickname: "hyemin"
                 }
             };
+        case "LOG_OUT_FAILURE":
+            return {
+                ...state
+                , isLoggingIn: false
+            }
+        case LOG_OUT_REQUEST:
+            console.log("LOG_OUT_REQUEST");
 
-        case "LOG_OUT_REQUEST":
             return {
                 ...state
                 , isLoggingOut: true
-                , me: null
             }
+        case "LOG_OUT_SUCCESS":
+            return {
+                isLoggingOut: false
+                , isLoggedIn: false
+                , me: null
+            };
+
         default:
             return state;
     }

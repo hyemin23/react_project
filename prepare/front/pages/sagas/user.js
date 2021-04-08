@@ -1,6 +1,6 @@
 import React from 'react'
 import { all, delay, fork, put, takeLatest } from 'redux-saga/effects'
-import { LOG_IN_REQUEST } from '../reducers/user';
+import { LOG_IN_REQUEST, LOG_OUT_REQUEST } from '../reducers/user';
 
 
 //1
@@ -20,14 +20,13 @@ function* watchLogIn() {
 }
 //
 function* watchLogOut() {
-    yield takeLatest("LOG_OUT", logOut);
+    yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 //dispatch 처럼 action을 가짐
 // 2.
 function* logIn(action) {
     try {
-        console.log("saga action : ", action.data);
         //1초안에 재버튼 누르면 무시
         yield delay(1000);
         yield put({
@@ -37,17 +36,23 @@ function* logIn(action) {
 
     } catch (error) {
         yield put({
-            type: "LOGOUT_FAILURE"
+            type: "LOG_OUT_FAILURE"
             , error: error.response.data
         })
     }
 }
 
-function* logOut() {
+function* logOut(action) {
     try {
-
+        yield delay(1000);
+        yield put({
+            type: "LOG_OUT_SUCCESS"
+        });
     } catch (error) {
-
+        yield put({
+            type: "LOG_OUT_FAILURE"
+            , error: error.response.data
+        });
     }
 }
 
