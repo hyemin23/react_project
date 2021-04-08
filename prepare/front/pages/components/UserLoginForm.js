@@ -2,13 +2,15 @@ import React, { useCallback, useState } from 'react'
 import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 import styled from "styled-components";
-import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+import { LOG_IN_REQUEST } from "../reducers/user";
 
 function UserLoginForm() {
 
     const dispatch = useDispatch();
+    const { isLoggingIn } = useSelector((state) => state.user);
+    console.log("isLoggingIn,isLoggingIn");
+
     const [userInfo, setUserInfo] = useState({
         user_id: ""
         , user_pw: ""
@@ -28,9 +30,11 @@ function UserLoginForm() {
     }, [userInfo]);
 
     const onSubmit = useCallback(() => {
-        dispatch(loginAction({
-            userInfo
-        }));
+
+        dispatch({
+            type: LOG_IN_REQUEST
+            , data: userInfo
+        });
     }, [userInfo])
 
 
@@ -47,8 +51,9 @@ function UserLoginForm() {
                 <Button
                     type="primary"
                     htmlType="submit"
-                    loading={false}
-                >Login</Button>
+                    loading={isLoggingIn}>
+                    로그인
+                    </Button>
                 <Link href="/signup"><a><Button type="">회원가입</Button></a></Link>
             </ButtonWrapper>
         </FormWrapper>

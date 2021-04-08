@@ -11,7 +11,9 @@ const { Search } = Input;
 
 const AppLayout = ({ children }) => {
     //const [isLoggedin, setIsLoggedin] = useState(false);
-    const isLoggedIn = useSelector(state => state.user.isLoggedIn)
+
+    const { isLoggedIn } = useSelector(state => state.user)
+    console.log("AppLayout : ", isLoggedIn);
     return (
         <div>
             <Menu mode="horizontal">
