@@ -26,16 +26,11 @@ export const init = {
         }]
     }],
     imagePaths: [],
-    postAdded: false,
+    addPostLoading: false,
+    addPostDone: false,
+    addPostError: null
 };
 
-//액션 타입 생성
-const ADD_POST = "ADD_POST";
-
-//액션 객체 생성
-export const addPost = {
-    type: ADD_POST
-}
 
 const dummyPost = {
     id: 2,
@@ -47,14 +42,49 @@ const dummyPost = {
     Images: [],
     Comments: [],
 };
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
+export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
+
+//액션 객체 생성
+export const addPost = (data) => ({
+    type: ADD_POST_REQUEST
+    , data
+});
+export const addComment = (data) => ({
+    type: ADD_COMMENT_REQUEST
+    , data
+})
+
 
 const reducer = (state = init, action) => {
     switch (action.type) {
-        case ADD_POST:
+        case ADD_POST_REQUEST:
+            return {
+                ...state
+                ,
+            }
+        case ADD_POST_SUCCESS:
             return {
                 ...state,
                 mainPosts: [dummyPost, ...state.mainPosts], //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
                 postAdded: true
+            }
+        case ADD_POST_FAILURE:
+            return {
+
             }
         default:
             return state;
