@@ -3,13 +3,12 @@ import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { LOG_IN_REQUEST } from "../reducers/user";
+import { LOG_IN_REQUEST } from '../reducers/user';
 
 function UserLoginForm() {
 
     const dispatch = useDispatch();
     const { logInLoading } = useSelector((state) => state.user);
-
 
     const [userInfo, setUserInfo] = useState({
         user_email: ""

@@ -12,8 +12,7 @@ const { Search } = Input;
 const AppLayout = ({ children }) => {
     //const [isLoggedin, setIsLoggedin] = useState(false);
 
-    const { isLoggedIn } = useSelector(state => state.user)
-    console.log("AppLayout : ", isLoggedIn);
+    const { me } = useSelector(state => state.user)
     return (
         <div>
             <Menu mode="horizontal">
@@ -34,7 +33,7 @@ const AppLayout = ({ children }) => {
 
 
                 <Col xs={24} md={6}>
-                    {isLoggedIn ? <UserProfile /> : <UserLoginForm />}
+                    {me ? <UserProfile /> : <UserLoginForm />}
                 </Col >
                 <Col xs={24} md={12}>
                     {children}

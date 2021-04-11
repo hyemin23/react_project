@@ -8,7 +8,6 @@ import { Overlay, Header, CloseBtn, SlickWrapper, ImgWrapper, Indicator, Global 
 
 const ImagesZoom = ({ images, onClose }) => {
 
-    console.log(images);
 
     const [CurrentSlide, setCurrentSlide] = useState(0);
 

@@ -1,11 +1,11 @@
 import Reaact, { useCallback, useState } from 'react';
 import Head from "next/head";
-import AppLayout from "./components/AppLayout";
+import AppLayout from "../components/AppLayout";
 import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components';
-import useInput from './hook/useInput';
+import useInput from '../hook/useInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_UP_REQUEST } from './reducers/user';
+import { SIGN_UP_REQUEST } from '../reducers/user';
 
 
 const Signup = () => {

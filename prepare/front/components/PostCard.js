@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 
-function PostCard({ post }) {
 
-    console.log("post는 : ", post.content);
+function PostCard({ post }) {
     const id = useSelector((state) => state.user.me?.id);
+    console.log("postContent : ", post.content);
 
     //하트 상태
     const [liked, setLiked] = useState(false);
@@ -22,8 +22,6 @@ function PostCard({ post }) {
         setLiked(prev => !prev);
     }, []);
     const onToggleComment = useCallback(() => {
-
-        console.log("코멘트 토글 들어옴");
         setCommentFormOpen(prev => !prev);
     }, []);
 

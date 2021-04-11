@@ -48,9 +48,9 @@ const dummyUser = (data) => ({
     ...data
     , nickname: "혜민"
     , id: 1
-    , Posts: []
-    , Following: []
-    , Followers: []
+    , Posts: [{ id: 1 }]
+    , Following: [{ nickname: "부기초" }, { nickname: "test1" }, { nickname: "test2" }]
+    , Followers: [{ nickname: "부기초" }, { nickname: "test1" }, { nickname: "test2" }]
 });
 
 //리듀서는 함수임

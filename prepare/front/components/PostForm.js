@@ -1,25 +1,43 @@
 import { Button, Form, Input } from 'antd';
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hook/useInput';
-import { addPost } from '../reducers/post';
+import { addPost, ADD_POST_REQUEST } from '../reducers/post';
 
 
 
 function PostForm() {
-    const { imagePaths } = useSelector((state) => state.post);
-    const [text, setText] = useState("");
-    const onChangeText = useCallback((e) => {
-        setText(e.target.value);
-    })
+    const { imagePaths, addPostDone } = useSelector((state) => state.post);
+    const [text, onChangeText, setText] = useInput("");
+
     const dispatch = useDispatch();
 
+
+
     const onSubmit = useCallback(() => {
-        dispatch(addPost);
-        setText("");
-    }, []);
+        console.log('text : ', text);
+        dispatch({
+            type: ADD_POST_REQUEST
+            , data: {
+                text
+            }
+        });
 
+    }, [text]);
 
+    //setText부분은 서버단에서 실패했을 경우를 대비해서 
+    useEffect(() => {
+        //done이 true일 경우에만 텍스트 input창을 초기화 시켜준다.
+        if (addPostDone) {
+            setText("");
+        }
+    }, [addPostDone]);
+
+    //이미지 ref를 위해서 선언
+    const imageInput = useRef()
+    const onClickImageUpload = useCallback(() => {
+        imageInput.current.click();
+    }, [imageInput.current]);
     return (
         <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
             <Input.TextArea value={text}
@@ -28,7 +46,7 @@ function PostForm() {
                 placeholder="오늘은 어떤일이 있었나요?"
             />
             <div>
-                <input type="file" multiple hidden />
+                <input type="file" multiple hidden ref={imageInput} />
                 <Button>이미지 업로드</Button>
                 <Button type="primary" style={{ float: "right" }}
                     htmlType="submit"

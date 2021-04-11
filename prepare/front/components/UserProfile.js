@@ -8,6 +8,9 @@ function UserProfile() {
 
     const dispatch = useDispatch();
     const { me, logOutLoading } = useSelector((state) => state.user);
+
+    console.log("me : ", me);
+
     const onClick = useCallback(() => {
         dispatch({
             type: LOG_OUT_REQUEST
@@ -18,7 +21,7 @@ function UserProfile() {
     return (
         <Card actions={[
             <div key="tit">짹짹<br />{me.Posts.length}</div>,
-            <div key="followings">짹짹<br />{me.Followings.length}</div>,
+            <div key="followings">짹짹<br />{me.Following.length}</div>,
             <div key="follwers">짹짹<br />{me.Followers.length}</div>
         ]}>
             <Card.Meta title={me.nickname}

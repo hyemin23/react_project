@@ -8,6 +8,7 @@ import Link from 'next/link';
 //객체 리터럴을 반환하는 경우 소괄호 (화살표함수에서)
 const PostCardContent = ({ postData }) => (
 
+
     <div>
         {
             postData.split(/(#[^\s#]+)/g).map((v, i) => {
