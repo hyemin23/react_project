@@ -8,19 +8,19 @@ import { LOG_IN_REQUEST } from "../reducers/user";
 function UserLoginForm() {
 
     const dispatch = useDispatch();
-    const { isLoggingIn } = useSelector((state) => state.user);
-    console.log("isLoggingIn,isLoggingIn");
+    const { logInLoading } = useSelector((state) => state.user);
+
 
     const [userInfo, setUserInfo] = useState({
-        user_id: ""
+        user_email: ""
         , user_pw: ""
     });
 
     const onChange = useCallback((e) => {
         const { name, value } = e.target;
-        if (name === "user_id") {
+        if (name === "user_email") {
             setUserInfo(prev => ({
-                ...prev, user_id: value
+                ...prev, user_email: value
             }));
         } else {
             setUserInfo(prev => ({
@@ -41,9 +41,10 @@ function UserLoginForm() {
     return (
         <FormWrapper onFinish={onSubmit}>
             <div>
-                <label htmlFor="user_id">ID</label>
+                <label htmlFor="user_email">ID</label>
                 <br />
-                <Input type="text" name="user_id" required onChange={onChange} value={userInfo.user_id} />
+
+                <Input type="text" name="user_email" required onChange={onChange} value={userInfo.user_email} />
                 <label htmlFor="user_password">Password</label>
                 <Input type="password" name="user_password" value={userInfo.user_pw} required onChange={onChange} />
             </div>
@@ -51,7 +52,7 @@ function UserLoginForm() {
                 <Button
                     type="primary"
                     htmlType="submit"
-                    loading={isLoggingIn}>
+                    loading={logInLoading}>
                     로그인
                     </Button>
                 <Link href="/signup"><a><Button type="">회원가입</Button></a></Link>

@@ -4,11 +4,16 @@ import AppLayout from "./components/AppLayout";
 import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components';
 import useInput from './hook/useInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { SIGN_UP_REQUEST } from './reducers/user';
 
 
 const Signup = () => {
 
-    const [id, onChangeId] = useInput("");
+    const dispatch = useDispatch();
+    const { signUpLoading } = useSelector((state) => state.user);
+
+    const [email, onChangeId] = useInput("");
     const [nickname, onChangeNickname] = useInput("");
     const [password, onChangePassword] = useInput("");
 
@@ -27,14 +32,18 @@ const Signup = () => {
         setPasswordError(e.target.value !== password ? true : false);
     }, [password]);
 
-    const onFinish = () => {
+    const onFinish = useCallback(() => {
         if (password !== passwordCehck) {
             return setPasswordError(true);
         }
         if (!term) {
             return setTermError(true);
         }
-    };
+        dispatch({
+            type: SIGN_UP_REQUEST
+            , data: { email, passwordCehck, nickname }
+        })
+    }, [email, password, passwordCehck, term]);
 
     const onChangeTerm = (e) => {
         setTermError(false);
@@ -49,9 +58,9 @@ const Signup = () => {
             <AppLayout >
                 <Form onFinish={onFinish}>
                     <div>
-                        <label htmlFor="userId">아이디</label>
+                        <label htmlFor="user_email">이메일</label>
                         <br />
-                        <Input type="text" name="userId" value={id} required
+                        <Input type="email" name="user_email" value={email} required
 
                             onChange={onChangeId}
                         />
@@ -92,7 +101,7 @@ const Signup = () => {
                             </div>}
                     </div>
                     <div>
-                        <FormButton type="primary" htmlType="submit">가입하기</FormButton>
+                        <FormButton type="primary" htmlType="submit" loading={signUpLoading}>가입하기</FormButton>
                     </div>
                 </Form>
             </AppLayout>

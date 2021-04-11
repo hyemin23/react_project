@@ -7,5 +7,5 @@ export default (init = null) => {
     }, []);
 
     //변수와 그 변수를 set 해주는 useCallback함수를 돌려줌
-    return [value, handler];
+    return [value, handler, setValue];
 }
