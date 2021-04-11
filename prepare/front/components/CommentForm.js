@@ -10,7 +10,7 @@ function CommentForm({ post }) {
 
     //댓글 작성자인지 확인하기 위해서 id 값을 가져옴
     const id = useSelector((state) => state.user.me?.id);
-    const { addCommentDone, addCommentLoading } = useSelector((sate) => state.post);
+    const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
 
     const dispatch = useDispatch();
 
@@ -35,32 +35,23 @@ function CommentForm({ post }) {
 
     return (
         <Form onFinish={onSubmit}>
-            <Form.Item style={{ position: "relative", margin: 0 }}>
-                <Input.TextArea
-                    value={commentText}
-                    onChange={onChangeCommentText}
-                    rows={4}
-
-                />
-                <Button type="primary" htmlType="submit"
-                    style={{
-                        position: "absolute", right: 0, bottom: -40,
-                        zIndex: 1
-                    }}
+            <Form.Item style={{ position: 'relative', margin: 0 }}>
+                <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} />
+                <Button
+                    style={{ position: 'absolute', right: 0, bottom: -40 }}
+                    type="primary"
+                    htmlType="submit"
                     loading={addCommentLoading}
-                >
-
-
-                    등록
-                </Button>
+                >삐약
+        </Button>
             </Form.Item>
         </Form>
     )
 }
-
 CommentForm.propTypes = {
     post: PropTypes.object.isRequired,
-}
+};
+
 
 
 export default CommentForm;

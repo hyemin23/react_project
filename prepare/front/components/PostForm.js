@@ -15,7 +15,6 @@ function PostForm() {
 
 
     const onSubmit = useCallback(() => {
-        console.log('text : ', text);
         dispatch({
             type: ADD_POST_REQUEST
             , data: {

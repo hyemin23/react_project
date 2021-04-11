@@ -1,4 +1,5 @@
 import shortId from "shortid";
+import produce from "../utill/produce";
 
 export const init = {
     mainPosts: [{
@@ -80,7 +81,7 @@ export const addComment = (data) => ({
 
 const dummyPost = (data) => ({
     id: data.id,
-    content: data.text,
+    content: data.content.text,
     User: {
         id: 1,
         nickname: '혜민이가 씁니다',
@@ -90,45 +91,60 @@ const dummyPost = (data) => ({
 });
 
 const reducer = (state = init, action) => {
-    switch (action.type) {
-        case ADD_POST_REQUEST:
-            console.log("ADD POST REQUEST");
-            return {
-                ...state
-                , addPostLoading: true
-                , addPostDone: false
-                , addPostError: null
-            }
-        case ADD_POST_SUCCESS:
-            console.log("ADD_POST_SUCCESS");
-            console.log(action.data);
-            return {
-                ...state,
-                addPostLoading: false
-                , addPostDone: true,
-                mainPosts: [dummyPost(action.data), ...state.mainPosts], //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
-                postAdded: true
-            }
-        case ADD_POST_FAILURE:
-            return {
+    return produce(state, (draft) => {
+        console.log("daft : ", draft);
+        switch (action.type) {
+            case ADD_POST_REQUEST:
+                draft.addPostLoading = true;
+                draft.addPostDone = false;
+                draft.addPostError = null;
+                break;
+            case ADD_POST_SUCCESS:
 
-            }
-        case ADD_COMMENT_REQUEST:
-            return {
+                draft.addPostLoading = false;
+                draft.addPostDone = true;
+                //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
+                draft.mainPosts.unshift(dummyPost(action.data));
+                break;
+            case ADD_POST_FAILURE:
+                draft.addPostLoading = false;
+                draft.addPostError = action.error;
+                break;
+            case REMOVE_POST_REQUEST:
+                draft.removePostLoading = true;
+                draft.removePostDone = false;
+                draft.removePostError = null;
+                break;
+            case REMOVE_POST_SUCCESS:
+                draft.removePostLoading = false;
+                draft.removePostDone = true;
+                draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data);
+                break;
+            case REMOVE_POST_FAILURE:
+                draft.removePostLoading = false;
+                draft.removePostError = action.error;
+                break;
+            case ADD_COMMENT_REQUEST:
+                draft.addCommentLoading = true;
+                draft.addCommentDone = false;
+                draft.addCommentError = null;
+                break;
+            case ADD_COMMENT_SUCCESS:
+                const post = draft.mainPosts.find((v) => v.id === action.data.postId);
+                console.log("post 리듀서의 post : ", post);
 
-            }
-        case ADD_COMMENT_SUCCESS:
-            return {
-
-            }
-        case ADD_COMMENT_FAILURE:
-            return {
-
-            }
-        default:
-            return state;
-    }
-
+                post.Comments.unshift(dummyComment(action.data.content));
+                draft.addCommentLoading = false;
+                draft.addCommentDone = true;
+                break;
+            case ADD_COMMENT_FAILURE:
+                draft.addCommentLoading = false;
+                draft.addCommentError = action.error;
+                break;
+            default:
+                return state;
+        }
+    })
 }
 
 export default reducer;
