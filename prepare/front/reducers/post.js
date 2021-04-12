@@ -1,48 +1,48 @@
 import shortId from "shortid";
 import produce from "../utill/produce";
+import faker from "faker";
 
 export const init = {
-    mainPosts: [{
-        id: 1,
-        User: {
-            id: 1,
-            nickname: '제로초',
-        },
-        content: '첫 번째 게시글,갓데밋, #갓데밋,#갓쿠,#렌 고 투#ㅋ',
-        Images: [{
-            id: shortId.generate(),
-            src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
-        }, {
-            id: shortId.generate(),
-            src: 'https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg',
-        }, {
-            id: shortId.generate(),
-            src: 'https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg',
-        }],
-        Comments: [{
-            id: shortId.generate()
-            , User: {
-                id: shortId.generate(),
-                nickname: 'nero',
-            },
-            content: '우와 개정판이 나왔군요~',
-        }, {
-            id: shortId.generate(),
-            User: {
-                id: shortId.generate(),
-                nickname: 'hero',
-            },
-            content: '얼른 사고싶어요~',
-        }]
-    }],
-    imagePaths: [],
-    addPostLoading: false,
-    addPostDone: false,
-    addPostError: null
+    mainPosts: []
+    , imagePaths: []
+    , hasMorePosts: true
+    , loadPostsLoading: false
+    , loadPostsDone: false
+    , loadPostsError: null
+    , addPostLoading: false
+    , addPostDone: false
+    , addPostError: null
     , addCommentLoading: false
     , addCommentDone: false
     , addCommentError: null
+
 };
+
+//함수로 빼기
+//이유 : 서버에서 불러오는 것을 얘로 대체해주기
+export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+    id: shortId.generate()
+    , User: {
+        id: shortId.generate()
+        , nickname: faker.name.findName()
+    }
+    , content: faker.lorem.paragraph()
+    , Images: [{
+        src: faker.image.image()
+    }]
+    , Comments: [{
+        User: {
+            id: shortId.generate()
+            , nickname: faker.name.findName()
+        },
+        content: faker.lorem.sentence(),
+    }],
+}));
+
+
+//더이데이터 초기 상태에 함수로 붙여주기
+//무한 스크롤링을 사가를 통해 구현하려고.
+init.mainPosts = init.mainPosts.concat(generateDummyPost(10));
 
 
 const dummyComment = (data) => ({
@@ -53,18 +53,23 @@ const dummyComment = (data) => ({
         nickname: '제로초',
     },
 });
+
+//초기 data load action
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
+//게시글 관련 action
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
 
+//게시글 삭제 관련 action
 export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
+//게시글 댓글 관련 action
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
@@ -94,13 +99,27 @@ const reducer = (state = init, action) => {
     return produce(state, (draft) => {
         console.log("daft : ", draft);
         switch (action.type) {
+            case LOAD_POSTS_REQUEST:
+                draft.loadPostsLoading = true;
+                draft.loadPostsDone = false;
+                draft.loadPostsError = null
+                break;
+            case LOAD_POSTS_SUCCESS:
+                draft.loadPostsLoading = false;
+                draft.loadPostsDone = true;
+                draft.mainPosts = action.data.concat(draft.mainPosts)
+                draft.hasMorePosts = draft.mainPosts.length < 50;
+                break;
+            case LOAD_POSTS_FAILURE:
+                draft.loadPostsLoading = false;
+                draft.loadPostsError = action.error;
+                break;
             case ADD_POST_REQUEST:
                 draft.addPostLoading = true;
                 draft.addPostDone = false;
                 draft.addPostError = null;
                 break;
             case ADD_POST_SUCCESS:
-
                 draft.addPostLoading = false;
                 draft.addPostDone = true;
                 //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조

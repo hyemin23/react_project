@@ -1,11 +1,22 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import AppLayout from '../components/AppLayout';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
+import { LOAD_POSTS_REQUEST } from '../reducers/post';
 
 
 const Home = () => {
+
+    const dispatch = useDispatch();
+
+    //초기 data 불러오기
+    useEffect(() => {
+        dispatch({
+            type: LOAD_POSTS_REQUEST,
+        });
+    }, []);
+
     //로그인 여부
     const { me } = useSelector((state) => state.user);
 
