@@ -42,7 +42,7 @@ export const generateDummyPost = (number) => Array(number).fill().map(() => ({
 
 //더이데이터 초기 상태에 함수로 붙여주기
 //무한 스크롤링을 사가를 통해 구현하려고.
-init.mainPosts = init.mainPosts.concat(generateDummyPost(10));
+//init.mainPosts = init.mainPosts.concat(generateDummyPost(10));
 
 
 const dummyComment = (data) => ({
@@ -97,17 +97,16 @@ const dummyPost = (data) => ({
 
 const reducer = (state = init, action) => {
     return produce(state, (draft) => {
-        console.log("daft : ", draft);
         switch (action.type) {
             case LOAD_POSTS_REQUEST:
                 draft.loadPostsLoading = true;
                 draft.loadPostsDone = false;
-                draft.loadPostsError = null
+                draft.loadPostsError = null;
                 break;
             case LOAD_POSTS_SUCCESS:
                 draft.loadPostsLoading = false;
                 draft.loadPostsDone = true;
-                draft.mainPosts = action.data.concat(draft.mainPosts)
+                draft.mainPosts = action.data.concat(draft.mainPosts);
                 draft.hasMorePosts = draft.mainPosts.length < 50;
                 break;
             case LOAD_POSTS_FAILURE:
@@ -150,8 +149,6 @@ const reducer = (state = init, action) => {
                 break;
             case ADD_COMMENT_SUCCESS:
                 const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-                console.log("post 리듀서의 post : ", post);
-
                 post.Comments.unshift(dummyComment(action.data.content));
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;

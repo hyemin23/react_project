@@ -9,6 +9,9 @@ import { LOAD_POSTS_REQUEST } from '../reducers/post';
 const Home = () => {
 
     const dispatch = useDispatch();
+    const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+    //로그인 여부
+    const { me } = useSelector((state) => state.user);
 
     //초기 data 불러오기
     useEffect(() => {
@@ -17,11 +20,23 @@ const Home = () => {
         });
     }, []);
 
-    //로그인 여부
-    const { me } = useSelector((state) => state.user);
+    useEffect(() => {
+        function onScroll() {
+            if ((window.scrollY + document.documentElement.clientHeight) > document.documentElement.scrollHeight - 500) {
+                if (hasMorePosts && !loadPostsLoading) {
+                    dispatch({
+                        type: LOAD_POSTS_REQUEST,
+                    });
+                }
+            }
+        }
+        window.addEventListener('scroll', onScroll);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, [hasMorePosts, loadPostsLoading]);
 
     //게시글
-    const { mainPosts } = useSelector((state) => state.post);
     return (
         <AppLayout>
             {/* 로그인한 사용자만 form이 보임 */}
