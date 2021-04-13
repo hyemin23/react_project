@@ -2,7 +2,7 @@ import React from 'react'
 import { all, delay, fork, put, takeLatest } from 'redux-saga/effects'
 import {
     LOG_IN_REQUEST, LOG_OUT_REQUEST, LOG_IN_FAILURE
-    , LOG_IN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE
+    , LOG_IN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE
 } from '../reducers/user';
 
 
@@ -12,6 +12,8 @@ function* userSaga() {
         //비동기적으로 작동 두개 한번에 실행
         fork(watchLogIn)
         , fork(watchLogOut)
+        , fork(watchFollow)
+        , fork(watchUnFollow)
     ]);
 }
 
@@ -32,6 +34,43 @@ function* watchSignUp() {
 
 }
 
+function* watchFollow() {
+    yield takeLatest(FOLLOW_REQUEST, follow);
+
+}
+
+function* watchUnFollow() {
+    yield takeLatest(UNFOLLOW_REQUEST, unfollow);
+}
+
+function* unfollow(action) {
+    try {
+        yield (1000);
+        yield put({
+            type: UNFOLLOW_SUCCESS
+            , data: action.data
+        })
+    } catch (error) {
+        yield put({
+            type: UNFOLLOW_FAILURE
+        })
+    }
+}
+
+function* follow(action) {
+    try {
+        yield (1000);
+        yield put({
+            type: FOLLOW_SUCCESS
+            , data: action.data
+        });
+
+    } catch (error) {
+        yield put({
+            type: FOLLOW_FAILURE
+        })
+    }
+}
 
 function* signUp(action) {
     try {

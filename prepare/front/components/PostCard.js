@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import { REMOVE_POST_REQUEST } from '../reducers/post';
+import FollowButton from './FollowButton';
 
 
 function PostCard({ post }) {
@@ -59,8 +60,14 @@ function PostCard({ post }) {
                         </Button.Group>
                     )}>
                         <EllipsisOutlined />
-                    </Popover>]}
+                    </Popover>
+                ]}
+
+
+                extra={id && <FollowButton post={post} />}
             >
+
+
                 <Card.Meta
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                     title={post.User.nickname}
