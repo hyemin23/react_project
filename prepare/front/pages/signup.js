@@ -14,10 +14,9 @@ const Signup = () => {
     const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
 
     //로그인 되어 사용자 정보가 넘어온다면
+    //me 사용자 정보가 존자하면 "/" 초기 페이지로 이동 시켜버려야함
     useEffect(() => {
-        console.log("me, me.id", me, me.id);
         if (me && me.id) {
-            console.log("me 정보 있음 ");
             //replace는 뒤로가기 페이지조차 없애버림
             Router.replace("/");
         }
