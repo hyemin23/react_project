@@ -47,6 +47,7 @@ router.get('/', async (req, res, next) => { // GET /user
 //isNotLoggedIn 미들웨어가 통과되어야 다음 미들웨어가 동작함.
 //즉, 로그인을 하지 않은 경우에만 로그인이 가능하게끔 필터링 기능을 거침
 router.post('/login', isNotLoggedIn, (req, res, next) => {
+    console.log("login server enter")
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.log("로그인 에러 1 ", err);

@@ -133,6 +133,7 @@ function logInAPI(data) {
 
 function* logIn(action) {
     try {
+        console.log(action);
         const result = yield call(logInAPI, action.data);
         yield put({
             type: LOG_IN_SUCCESS,
