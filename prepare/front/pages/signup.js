@@ -1,17 +1,30 @@
-import Reaact, { useCallback, useState } from 'react';
+import Reaact, { useCallback, useEffect, useState } from 'react';
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import styled from 'styled-components';
 import useInput from '../hook/useInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { SIGN_UP_REQUEST } from '../reducers/user';
-
+import Router from "next/router";
 
 const Signup = () => {
 
     const dispatch = useDispatch();
-    const { signUpLoading } = useSelector((state) => state.user);
+    const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
+
+    //회원 가입이 완료되면 메인페이지로 이동
+    useEffect(() => {
+        if (signUpDone) {
+            Router.push("/");
+        }
+    }, [signUpDone]);
+
+    useEffect(() => {
+        if (signUpError) {
+            message.error("signUpError");
+        }
+    }, [signUpError]);
 
     const [email, onChangeId] = useInput("");
     const [nickname, onChangeNickname] = useInput("");
@@ -32,6 +45,10 @@ const Signup = () => {
         setPasswordError(e.target.value !== password ? true : false);
     }, [password]);
 
+    const onChangeTerm = (e) => {
+        setTerm(e.target.checked);
+        setTermError(false);
+    };
     const onFinish = useCallback(() => {
         if (password !== passwordCehck) {
             return setPasswordError(true);
@@ -41,14 +58,10 @@ const Signup = () => {
         }
         dispatch({
             type: SIGN_UP_REQUEST
-            , data: { email, passwordCehck, nickname }
+            , data: { email, password, nickname },
         })
     }, [email, password, passwordCehck, term]);
 
-    const onChangeTerm = (e) => {
-        setTermError(false);
-        setTerm(e.target.checked);
-    };
 
     return (
         <>

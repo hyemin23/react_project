@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
     index: (state = {}, action) => {
         switch (action.type) {
             case HYDRATE:
-                console.log("하이드레이트 : ", action);
+                //console.log("하이드레이트 : ", action);
                 return {
                     ...state, ...action.payload
                 };
