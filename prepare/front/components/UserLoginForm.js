@@ -28,6 +28,8 @@ function UserLoginForm() {
         }
     }, [userInfo]);
 
+
+    //onFinish는 e.preventDefault()기 기본적으로 셋팅되어있음
     const onSubmit = useCallback(() => {
         dispatch({
             type: LOG_IN_REQUEST
@@ -37,7 +39,7 @@ function UserLoginForm() {
 
     useEffect(() => {
         if (logInError) {
-            message.warning(logInError);
+            message.warn(logInError);
         }
     }, [logInError]);
 

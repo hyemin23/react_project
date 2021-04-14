@@ -140,7 +140,6 @@ function* logIn(action) {
         });
     } catch (err) {
         console.log("로그인중 에러 발생 @@@ !! saga");
-        console.log(err.response);
         yield put({
             type: LOG_IN_FAILURE,
             error: err.response.data,

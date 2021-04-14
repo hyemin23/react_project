@@ -6,6 +6,11 @@ const { User, Post } = require('../models');
 
 const router = express.Router();
 
+//custom module을 가져다 씀
+const { isLoggedIn, isNotLoggedIn } = require("../middleware/middleware");
+
+
+//로그인
 router.get('/', async (req, res, next) => { // GET /user
     try {
         if (req.user) {
@@ -37,8 +42,11 @@ router.get('/', async (req, res, next) => { // GET /user
     }
 });
 
-router.post('/login', (req, res, next) => {
-    console.log("로그인 서버 passport 라우터 들어옴");
+
+//로그인 라우터
+//isNotLoggedIn 미들웨어가 통과되어야 다음 미들웨어가 동작함.
+//즉, 로그인을 하지 않은 경우에만 로그인이 가능하게끔 필터링 기능을 거침
+router.post('/login', isNotLoggedIn, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.log("로그인 에러 1 ", err);
@@ -77,7 +85,9 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.post('/', async (req, res, next) => { // POST /user/
+//회원가입
+//인증받은 사용자 즉 로그인이 안 된 사용자여야만 로그인이 가능하게끔 만들어야함
+router.post('/', isNotLoggedIn, async (req, res, next) => { // POST /user/
     try {
         const exUser = await User.findOne({
             where: {
@@ -100,7 +110,7 @@ router.post('/', async (req, res, next) => { // POST /user/
     }
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => {
     req.logout();
     req.session.destroy();
     res.send('ok');

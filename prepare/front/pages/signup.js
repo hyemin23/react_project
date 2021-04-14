@@ -11,7 +11,17 @@ import Router from "next/router";
 const Signup = () => {
 
     const dispatch = useDispatch();
-    const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
+    const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
+
+    //로그인 되어 사용자 정보가 넘어온다면
+    useEffect(() => {
+        console.log("me, me.id", me, me.id);
+        if (me && me.id) {
+            console.log("me 정보 있음 ");
+            //replace는 뒤로가기 페이지조차 없애버림
+            Router.replace("/");
+        }
+    }, [me && me.id]);
 
     //회원 가입이 완료되면 메인페이지로 이동
     useEffect(() => {
