@@ -6,7 +6,8 @@
     "back/models",
     "back/passport",
     "back/app.js",
-    "nodemon.json"
+    "nodemon.json",
+    "back/middleware"
   ],
   "exec": "node back/app.js",
   "ext": "js json"
