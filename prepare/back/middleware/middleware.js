@@ -13,7 +13,7 @@ exports.isLoggedIn = (req, res, next) => {
 }
 
 exports.isNotLoggedIn = (req, res, next) => {
-    //로그인을 하지 않은 경우
+    //로그인을 하지 않은 경우에만 다음 미들웨어 동작하게끔
     if (!req.isAuthenticated()) {
         //다음 미들 웨어로 보내버림
         next();
