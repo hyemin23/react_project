@@ -139,7 +139,8 @@ function* logIn(action) {
             data: result.data,
         });
     } catch (err) {
-        console.error(err);
+        console.log("로그인중 에러 발생 @@@ !! saga");
+        console.log(err.response);
         yield put({
             type: LOG_IN_FAILURE,
             error: err.response.data,
@@ -167,8 +168,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-    console.log("asdasdasd유저사가")
-    return axios.post("http://localhost:3065/user", data);
+    return axios.post("/user", data);
 }
 
 function* signUp(action) {
