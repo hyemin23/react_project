@@ -122,7 +122,8 @@ const reducer = (state = init, action) => {
                 draft.addPostLoading = false;
                 draft.addPostDone = true;
                 //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
-                draft.mainPosts.unshift(dummyPost(action.data));
+                //draft.mainPosts.unshift(dummyPost(action.data));
+                draft.mainPosts.unshift(action.data);
                 break;
             case ADD_POST_FAILURE:
                 draft.addPostLoading = false;
@@ -148,8 +149,8 @@ const reducer = (state = init, action) => {
                 draft.addCommentError = null;
                 break;
             case ADD_COMMENT_SUCCESS:
-                const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-                post.Comments.unshift(dummyComment(action.data.content));
+                const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+                post.Comments.unshift(action.data.content);
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 break;

@@ -16,16 +16,21 @@ function CommentForm({ post }) {
 
 
     const [commentText, onChangeCommentText, setCommentText] = useInput("");
+
+
     const onSubmit = useCallback(() => {
-
-
         //변수를 사용한 create 이용
         dispatch({
             type: ADD_COMMENT_REQUEST
-            , data: { content: commentText.post, postId: post.id, userId: id }
+            , data: {
+                content: commentText.post
+                , postId: post.id
+                , userId: id
+            }
         });
 
     }, [commentText], [id]);
+
 
     useEffect(() => {
         if (addCommentDone) {

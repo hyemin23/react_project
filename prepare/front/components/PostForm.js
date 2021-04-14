@@ -49,6 +49,7 @@ function PostForm() {
                 <Button>이미지 업로드</Button>
                 <Button type="primary" style={{ float: "right" }}
                     htmlType="submit"
+                    onClick={onSubmit}
                 >짹짹</Button>
             </div>
             <div>
