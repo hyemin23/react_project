@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 
 const userRouter = require('./routes/user');
+const postRouter = require("./routes/post");
 const db = require('./models');
 
 const app = express();
@@ -21,13 +22,19 @@ db.sequelize.sync()
 
 passportConfig();
 
+
+//쿠키를 같이 전달하고 싶은 경우에는 
+//credentials를 true로 변경해야한다.
+//이럴경우 origin을 정확하게 명시해줘야함
+//1. origin : true  OR 2.프론트 주소
 app.use(cors({
-    origin: '*',
-    credentials: false,
+    origin: 'http://localhost:3000',
+    credentials: true,
 }));
 
 
-app.use('/', express.static(path.join(__dirname, 'uploads')));
+//app.use('/', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -45,6 +52,7 @@ app.get('/user', (req, res) => {
 });
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 app.listen(3065, () => {
     console.log('서버 실행 중!');
