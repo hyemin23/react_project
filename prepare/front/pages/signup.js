@@ -22,7 +22,7 @@ const Signup = () => {
 
     useEffect(() => {
         if (signUpError) {
-            message.error("signUpError");
+            message.error(signUpError);
         }
     }, [signUpError]);
 
