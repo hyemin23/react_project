@@ -4,6 +4,7 @@ import AppLayout from '../components/AppLayout';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
 
 const Home = () => {
@@ -13,8 +14,11 @@ const Home = () => {
     //로그인 여부
     const { me } = useSelector((state) => state.user);
 
-    //초기 data 불러오기
+    //초기 data & 로그인 정보를 쿠키를 통해 불러오기
     useEffect(() => {
+        dispatch({
+            type: LOAD_MY_INFO_REQUEST
+        });
         dispatch({
             type: LOAD_POSTS_REQUEST,
         });

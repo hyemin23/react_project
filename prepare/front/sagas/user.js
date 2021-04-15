@@ -10,6 +10,7 @@ import {
     FOLLOW_SUCCESS, LOAD_FOLLOWERS_FAILURE,
     LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWINGS_FAILURE,
     LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS,
+    LOAD_MY_INFO_REQUEST,
     LOAD_USER_FAILURE,
     LOAD_USER_REQUEST,
     LOAD_USER_SUCCESS,
@@ -107,22 +108,25 @@ function* changeNickname(action) {
     }
 }
 
+//get은 data가 존재하지않음. 2번째 인자는 withCredentials 값인데 현재는 index.js에 지정해줌
 function loadUserAPI() {
     return axios.get('/user');
 }
 
 function* loadUser(action) {
     try {
+
         const result = yield call(loadUserAPI, action.data);
+
         yield put({
-            type: LOAD_USER_SUCCESS,
-            data: result.data,
+            type: LOAD_USER_SUCCESS
+            , data: result.data
         });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.log(error);
         yield put({
-            type: LOAD_USER_FAILURE,
-            error: err.response.data,
+            type: LOAD_USER_FAILURE
+            , error: err.response.data
         });
     }
 }
@@ -244,7 +248,7 @@ function* watchChangeNickname() {
 }
 
 function* watchLoadUser() {
-    yield takeLatest(LOAD_USER_REQUEST, loadUser);
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser)
 }
 
 function* watchFollow() {

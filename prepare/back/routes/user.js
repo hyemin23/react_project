@@ -10,34 +10,41 @@ const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("../middleware/middleware");
 
 
-//로그인
+//로그인 & 사용자 불러오기
 router.get('/', async (req, res, next) => { // GET /user
     try {
+        console.log("로그인 사용자 정보 불러오기 ");
+        //req에 담긴 user는 미들웨어에거 전해줌 
+        //새로고침 할 때 마다 쿠키에 남아있는 정보로 로그인이 유지되게끔 만들어줌
+        //단, 로그인을 안 한 상태라면 req.user에서 error가 발생할 것임.
         if (req.user) {
+            //join으로 사용자 정보와 관련된 게시글,팔로워들 가져오기
             const fullUserWithoutPassword = await User.findOne({
                 where: { id: req.user.id },
                 attributes: {
-                    exclude: ['password']
+                    exclude: ["password"]
                 },
                 include: [{
-                    model: Post,
-                    attributes: ['id'],
+                    model: Post
+                    , attributes: ["id"]
+
                 }, {
-                    model: User,
-                    as: 'Followings',
-                    attributes: ['id'],
+                    model: User
+                    , as: "Followings"
+                    , attributes: ["id"]
                 }, {
-                    model: User,
-                    as: 'Followers',
-                    attributes: ['id'],
+                    model: User
+                    , as: "Followers"
+                    , attributes: ["id"]
                 }]
-            })
+            });
             res.status(200).json(fullUserWithoutPassword);
         } else {
             res.status(200).json(null);
         }
+
     } catch (error) {
-        console.error(error);
+        console.log(error);
         next(error);
     }
 });

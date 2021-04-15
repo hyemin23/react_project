@@ -36,6 +36,12 @@ export const initialState = {
     loginData: {},
 };
 
+//사용자 정보 가져오기 (새로고침)
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
 export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
@@ -90,6 +96,22 @@ export const logoutRequestAction = () => ({
 
 const reducer = (state = initialState, action) => produce(state, (draft) => {
     switch (action.type) {
+        // 사용자 쿠키 정보 가져오기
+        case LOAD_MY_INFO_REQUEST:
+            draft.loadUserLoading = true;
+            draft.loadUserError = null;
+            draft.loadUserDone = false;
+            break;
+        case LOAD_MY_INFO_SUCCESS:
+            draft.loadUserLoading = false;
+            draft.me = action.data;
+            draft.loadUserDone = true;
+            break;
+        case LOAD_MY_INFO_FAILURE:
+            draft.loadUserLoading = false;
+            draft.loadUserError = action.error;
+            break;
+
         case REMOVE_FOLLOWER_REQUEST:
             draft.removeFollowerLoading = true;
             draft.removeFollowerError = null;
