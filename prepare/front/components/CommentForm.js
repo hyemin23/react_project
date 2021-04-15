@@ -18,36 +18,30 @@ function CommentForm({ post }) {
     const [commentText, onChangeCommentText, setCommentText] = useInput("");
 
 
-    const onSubmit = useCallback(() => {
-        //변수를 사용한 create 이용
-        dispatch({
-            type: ADD_COMMENT_REQUEST
-            , data: {
-                content: commentText.post
-                , postId: post.id
-                , userId: id
-            }
-        });
-
-    }, [commentText], [id]);
-
-
     useEffect(() => {
         if (addCommentDone) {
-            setCommentText("");
+            setCommentText('');
         }
     }, [addCommentDone]);
+
+
+    const onSubmit = useCallback(() => {
+        dispatch({
+            type: ADD_COMMENT_REQUEST,
+            data: { content: commentText, postId: post.id, userId: id },
+        });
+    }, [commentText, id]);
 
     return (
         <Form onFinish={onSubmit}>
             <Form.Item style={{ position: 'relative', margin: 0 }}>
                 <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} />
                 <Button
-                    style={{ position: 'absolute', right: 0, bottom: -40 }}
+                    style={{ position: 'absolute', right: 0, bottom: -40, zIndex: 1 }}
                     type="primary"
                     htmlType="submit"
                     loading={addCommentLoading}
-                >삐약
+                >댓글남기기
         </Button>
             </Form.Item>
         </Form>

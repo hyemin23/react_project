@@ -12,63 +12,61 @@ router.post("/", isLoggedIn, async (req, res, next) => {
 
         //deserialize에서 생상한 req.user로 user 접근 가능
         const post = await Post.create({
-            content: req.body.content
-            , UserId: req.user.id
+            content: req.body.content,
+            UserId: req.user.id,
         });
 
         //console.log("생성된 post 객체는 : ", post);
 
         //include는 inner join이라고 생각하면 됨
-        const fillPost = await Post.findOne({
-            where: { id: post.id }
-            , include: [{
+        const fullPost = await Post.findOne({
+            where: { id: post.id },
+            include: [{
                 model: Image,
-            }
-                , {
+            }, {
                 model: Comment,
-            }
-                , {
-                model: User
+                include: [{
+                    model: User, // 댓글 작성자
+                    attributes: ['id', 'nickname'],
+                }],
+            }, {
+                model: User, // 게시글 작성자
+                attributes: ['id', 'nickname'],
             }]
         });
-
-        //게시글 작성 후 join된 변수로 return
-        res.status(201).json(fillPost);
-
-
+        res.status(201).json(fullPost);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         next(error);
     }
 });
 
 
-//로그인 한 사람만 댓글 작성이 가능하도록
-router.post("/:postId/comment", isLoggedIn, async (req, res, netx) => {
+router.post('/:postId/comment', isLoggedIn, async (req, res, next) => { // POST /post/1/comment
     try {
-        //게시글이 존재하는지 확인
         const post = await Post.findOne({
             where: { id: req.params.postId },
         });
-
-        //게시글이 존재하지 않으면
         if (!post) {
-            return res.status(403).send("존재하지 않는 게시글입니다.");
+            return res.status(403).send('존재하지 않는 게시글입니다.');
         }
-
-        //동적인 부분은 params 로 접근할 수 있음
-        //postId로 접근 여기서는
         const comment = await Comment.create({
-            content: req.body.content
-            , PostId: req.params.postId
-            , UserId: req.user.id
-        });
-
-        res.status(200).json(comment);
-
+            content: req.body.content,
+            PostId: parseInt(req.params.postId, 10),
+            UserId: req.user.id,
+        })
+        const fullComment = await Comment.findOne({
+            where: { id: comment.id },
+            include: [{
+                model: User,
+                attributes: ['id', 'nickname'],
+            }],
+        })
+        res.status(201).json(fullComment);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         next(error);
     }
-})
+});
+
 module.exports = router;

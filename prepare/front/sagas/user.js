@@ -123,7 +123,7 @@ function* loadUser(action) {
             , data: result.data
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         yield put({
             type: LOAD_USER_FAILURE
             , error: err.response.data

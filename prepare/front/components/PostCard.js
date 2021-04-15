@@ -19,13 +19,13 @@ function PostCard({ post }) {
     const [liked, setLiked] = useState(false);
 
     //댓글 상태
-    const [commentFormOpen, setCommentFormOpen] = useState(false);
+    const [commentFormOpened, setCommentFormOpened] = useState(false);
 
     const onToggleLike = useCallback(() => {
         setLiked(prev => !prev);
     }, []);
     const onToggleComment = useCallback(() => {
-        setCommentFormOpen(prev => !prev);
+        setCommentFormOpened(prev => !prev);
     }, []);
 
     const onRemovePost = useCallback(() => {
@@ -76,7 +76,7 @@ function PostCard({ post }) {
 
             </Card >
 
-            {commentFormOpen && (
+            {commentFormOpened && (
                 <div>
                     <CommentForm post={post} />
                     <List
@@ -92,25 +92,27 @@ function PostCard({ post }) {
                                 />
                             </li>
                         )}
-                    >
-                    </List>
+                    />
                 </div>
             )}
-
-        </div >
-    )
-}
+        </div>
+    );
+};
 
 PostCard.propTypes = {
     post: PropTypes.shape({
         id: PropTypes.number,
         User: PropTypes.object,
         content: PropTypes.string,
-        createdAt: PropTypes.object,
+        createdAt: PropTypes.string,
         //객체들의 배열
         Comments: PropTypes.arrayOf(PropTypes.object),
         Images: PropTypes.arrayOf(PropTypes.object),
+        Likers: PropTypes.arrayOf(PropTypes.object),
+        RetweetId: PropTypes.number,
+        Retweet: PropTypes.objectOf(PropTypes.any),
     }).isRequired,
-}
+};
+
 
 export default PostCard;
