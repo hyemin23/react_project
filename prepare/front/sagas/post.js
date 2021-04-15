@@ -9,12 +9,16 @@ import {
     ADD_POST_FAILURE,
     ADD_POST_REQUEST,
     ADD_POST_SUCCESS,
+    LIKE_POST_FAILURE,
+    LIKE_POST_REQUEST,
+    LIKE_POST_SUCCESS,
     LOAD_POSTS_FAILURE,
     LOAD_POSTS_REQUEST,
     LOAD_POSTS_SUCCESS,
     REMOVE_POST_FAILURE,
     REMOVE_POST_REQUEST,
     REMOVE_POST_SUCCESS,
+    UNLIKE_POST_REQUEST,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -116,6 +120,39 @@ function* addComment(action) {
     }
 }
 
+
+function likeAPI(data) {
+    console.log("data", data);
+    //이 경우에는 data를 넣지 않아도 됨. 용량만 차지
+    return axios.patch(`/post/${data}/like`);
+}
+/*좋아요 saga */
+function* like(action) {
+    try {
+
+        //result는 server에서 res로 전달해 준 값
+        const result = yield call(likeAPI, action.data);
+        console.log("result", result);
+        yield put({
+            type: LIKE_POST_SUCCESS
+            , data: result.data
+        });
+    } catch (error) {
+        console.error(error);
+        yield put({
+            type: LIKE_POST_FAILURE
+            , error: error.response.data
+        });
+    }
+}
+function* unlike(action) {
+    try {
+        yield call()
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 function* watchLoadPosts() {
     yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -131,6 +168,12 @@ function* watchRemovePost() {
 function* watchAddComment() {
     yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
+function* watchLike() {
+    yield takeLatest(LIKE_POST_REQUEST, like);
+}
+function* watchUnLike() {
+    yield takeLatest(UNLIKE_POST_REQUEST, unlike);
+}
 
 export default function* postSaga() {
     yield all([
@@ -138,5 +181,7 @@ export default function* postSaga() {
         fork(watchLoadPosts),
         fork(watchRemovePost),
         fork(watchAddComment),
+        fork(watchLike),
+        fork(watchUnLike),
     ]);
 }

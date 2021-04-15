@@ -191,6 +191,31 @@ const reducer = (state = init, action) => {
                 draft.addCommentLoading = false;
                 draft.addCommentError = action.error;
                 break;
+
+            case LIKE_POST_REQUEST:
+                draft.likePostLoading = true;
+                draft.addCommentDone = false;
+                draft.addCommentError = null;
+                break;
+            case LIKE_POST_SUCCESS: {
+                //좋아요 할 게시글 찾기
+                const post = draft.mainPosts.find((v) => {
+                    return v.id === action.data.PostId
+                });
+                //게시글에 좋아요를 누른 사람들에게
+                //사람들 이름의 내 아이디를 넣어줌
+                post.Likers.push({
+                    id: action.data.UserId
+                });
+                draft.likePostLoading = false;
+                draft.likePostDone = true;
+                break;
+            }
+            case LIKE_POST_FAILURE:
+                draft.likePostLoading = false;
+                draft.likePostError = action.error
+                break;
+
             default:
                 return state;
         }

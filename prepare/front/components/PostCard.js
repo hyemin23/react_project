@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { REMOVE_POST_REQUEST } from '../reducers/post';
+import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 
@@ -15,15 +15,29 @@ function PostCard({ post }) {
 
     const dispatch = useDispatch();
     const { removePostLoading } = useSelector((state) => state.post);
-    //하트 상태
-    const [liked, setLiked] = useState(false);
 
+    //좋아요 확인
+    const liked = post.Likers.find((v) => v.id === id);
+    console.log(post);
     //댓글 상태
     const [commentFormOpened, setCommentFormOpened] = useState(false);
 
-    const onToggleLike = useCallback(() => {
-        setLiked(prev => !prev);
+    //좋아요 버튼 클릭 시 
+    const onLike = useCallback(() => {
+        dispatch({
+            type: LIKE_POST_REQUEST
+            , data: post.id
+        });
     }, []);
+
+    //싫어요 버튼 클릭 시 
+    const onUnLike = useCallback(() => {
+        dispatch({
+            type: UNLIKE_POST_REQUEST
+            , data: post.id
+        });
+    }, []);
+
     const onToggleComment = useCallback(() => {
         setCommentFormOpened(prev => !prev);
     }, []);
@@ -41,9 +55,9 @@ function PostCard({ post }) {
                 actions={[
                     <RetweetOutlined key="retweet" />,
 
-                    liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
+                    liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
                         :
-                        <HeartOutlined key="heart" onClick={onToggleLike} />
+                        <HeartOutlined key="heart" onClick={onLike} />
 
                     , <MessageOutlined key="message" onClick={onToggleComment} />
                     , <Popover key="more" content={(
@@ -108,9 +122,7 @@ PostCard.propTypes = {
         //객체들의 배열
         Comments: PropTypes.arrayOf(PropTypes.object),
         Images: PropTypes.arrayOf(PropTypes.object),
-        Likers: PropTypes.arrayOf(PropTypes.object),
-        RetweetId: PropTypes.number,
-        Retweet: PropTypes.objectOf(PropTypes.any),
+        Likers: PropTypes.arrayOf(PropTypes.object)
     }).isRequired,
 };
 
