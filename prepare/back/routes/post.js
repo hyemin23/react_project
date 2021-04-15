@@ -80,7 +80,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => { // POST 
 //좋아요
 router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /post/1/like
     try {
-        console.log("좋아요 서버")
+
         //좋아요가 넘어오면 어떤 게시글에 어떤 유저가 좋아요를 했는지 
         const post = await Post.findOne({
             where: {
@@ -98,7 +98,6 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /
         //게시글의 좋아요에 userId추가
         await post.addLikers(req.user.id);
 
-        console.log("post정보: ", post);
         //saga로 data를 날림
         res.json({
             PostId: post.id
@@ -111,7 +110,33 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /
 });
 
 //싫어요
-router.delete("/:postId/unlike", (req, res, next) => {
+router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
+
+
+    try {
+        //해당 게시글이 있는지 확인
+        const post = await Post.findOne({
+            where: {
+                id: req.params.postId
+            }
+        });
+
+        if (!post) {
+            res.status(403).send("게시글이 존재하지 않습니다.");
+        }
+
+
+        //해당 게시글의 좋아요 user를 지운다
+        await post.removeLikers(req.user.id);
+
+        res.json({
+            PostId: post.id
+            , UserId: req.user.id
+        });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
 
 });
 

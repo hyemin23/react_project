@@ -216,10 +216,38 @@ const reducer = (state = init, action) => {
                 draft.likePostError = action.error
                 break;
 
+            case UNLIKE_POST_REQUEST:
+                draft.unlikePostLoading = true;
+                draft.unlikePostDone = false;
+                draft.unlikePostError = null;
+                break;
+            case UNLIKE_POST_SUCCESS: {
+                //싫어요 할 게시글 객체 찾기
+                const post = draft.mainPosts.find((v) => {
+                    return v.id === action.data.PostId
+                });
+
+
+                //새로운 post.Likers를 만들어 return.
+                //게시글의 Likers배열안에 좋아요한 사람의 id값과  현재 싫어요를 한 사람의 user id값이 같으면 제외시키기
+                post.Likers = post.Likers.filter((v) => {
+                    return v.id !== action.data.UserId;
+                });
+                draft.unlikePostLoading = false;
+                draft.unlikePostDone = true;
+                break;
+            }
+            case UNLIKE_POST_FAILURE:
+                draft.unlikePostLoading = false;
+                draft.unlikePostError = action.error;
+                break;
+
+
+
             default:
                 return state;
         }
     })
 }
 
-export default reducer;
+export default reducer; 

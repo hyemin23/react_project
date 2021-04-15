@@ -18,7 +18,7 @@ function PostCard({ post }) {
 
     //좋아요 확인
     const liked = post.Likers.find((v) => v.id === id);
-    console.log(post);
+
     //댓글 상태
     const [commentFormOpened, setCommentFormOpened] = useState(false);
 

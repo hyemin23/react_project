@@ -18,7 +18,9 @@ import {
     REMOVE_POST_FAILURE,
     REMOVE_POST_REQUEST,
     REMOVE_POST_SUCCESS,
+    UNLIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST,
+    UNLIKE_POST_SUCCESS,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -145,11 +147,25 @@ function* like(action) {
         });
     }
 }
+
+function unlikeAPI(data) {
+    return axios.delete(`/post/${data}/like`);
+}
+
 function* unlike(action) {
     try {
-        yield call()
+        const result = yield call(unlikeAPI, action.data);
+        yield put({
+            type: UNLIKE_POST_SUCCESS
+            , data: result.data
+        });
+
     } catch (error) {
         console.error(error);
+        yield put({
+            type: UNLIKE_POST_FAILURE
+            , error
+        });
     }
 }
 
