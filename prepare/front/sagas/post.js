@@ -1,6 +1,6 @@
 import axios from 'axios';
 import shortId from 'shortid';
-import { all, call, delay, fork, put, takeLatest, throttle } from 'redux-saga/effects';
+import { all, call, fork, put, takeLatest, throttle } from 'redux-saga/effects';
 
 import {
     ADD_COMMENT_FAILURE,

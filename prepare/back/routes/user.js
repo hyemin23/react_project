@@ -153,12 +153,10 @@ router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
 });
 
 
-//언팔로우 하기
+//언팔로잉 하기
 router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
 
     try {
-
-
         //팔로잉 할 수 있는 유저인지 조회
         const user = await User.findOne({
             where: {
@@ -166,11 +164,12 @@ router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
             }
         });
 
-        //유저기 존재하지 않으면
+        //유저가 존재하지 않으면
         if (!user) {
             return res.status(403).send("존재하지 않는 회원입니다.");
         }
 
+        //팔로워 테이블에서 연결관계를 끊음
         await user.removeFollowers(req.user.id);
         res.status(200).send({
             UserId: parseInt(req.params.userId)
@@ -182,16 +181,36 @@ router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
     }
 });
 
+//팔러워한 사람 차단하기
+//userId : 나를 팔로우한 유저 id
+router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
+    try {
+        //나를 팔로우 한 user 찾기
+        const user = await User.findOne({
+            where: {
+                id: req.params.userId
+            }
+        });
 
-//팔로잉 하기
-// roter.patch("/:postId/unfollow", isLoggedIn, async (req, res, next) => {
-//     try {
+        if (!user) {
+            //팔로워 한 유저가 없음
+            return res.status(403).send("팔로우한 유저가 없습니다!");
+        }
 
-//     } catch (error) {
-//         console.error(error);
-//         next(error);
-//     }
-// });
+        //나를 팔로우한 유저의 팔로잉 목록에서 내 아이디 제거
+        await user.removeFollowings(req.user.id);
+
+        return res.status(200).send({
+            UserId: parseInt(req.params.userId)
+        });
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+
 
 //팔로워 리스트 가져오기
 router.get("/followers", isLoggedIn, async (req, res, next) => {
@@ -218,7 +237,7 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
 });
 
 //팔로잉 리스트 가져오기
-router.get("/followers", isLoggedIn, async (req, res, next) => {
+router.get("/followings", isLoggedIn, async (req, res, next) => {
     try {
 
         //먼저 유저 조회
@@ -228,11 +247,10 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
             return res.status(403).send("유저가 존재하지 않습니다.");
         }
 
-        const followers = await user.getFollowers();
+        const followings = await user.getFollowings();
+        console.log("찾은 팔로잉 목록 : ", followings);
 
-        console.log("찾은 follwers : ", followers);
-
-        return res.status(201).send(followers);
+        return res.status(201).send(followings);
 
 
     } catch (error) {

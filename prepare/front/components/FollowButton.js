@@ -21,14 +21,14 @@ const FollowButton = ({ post }) => {
             dispatch({
                 type: UNFOLLOW_REQUEST
                 , data: post.User.id
-            })
+            });
         }
         //팔로잉 하지 않은 사람이라면 팔로우
         else {
             dispatch({
                 type: FOLLOW_REQUEST
                 , data: post.User.id
-            })
+            });
         }
     }, [isFollowing]);
 

@@ -11,14 +11,8 @@ import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from '../reducers/use
 
 const Profile = () => {
 
-    const { me } = useSelector((stat) => stat.user);
+    const { me } = useSelector((state) => state.user);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (!(me && me.id)) {
-            Router.push("/");
-        }
-    }, [me && me.id]);
 
     //팔로우 리스트 가져오기
     useEffect(() => {
@@ -26,11 +20,17 @@ const Profile = () => {
             type: LOAD_FOLLOWERS_REQUEST
         });
 
-        // dispatch({
-        //     type: LOAD_FOLLOWINGS_REQUEST
-        // })
+        //팔로잉 리스트 가져오기
+        dispatch({
+            type: LOAD_FOLLOWINGS_REQUEST
+        });
     }, []);
-    //팔로잉 리스트 가져오기
+
+    useEffect(() => {
+        if (!(me && me.id)) {
+            Router.push("/");
+        }
+    }, [me && me.id]);
 
     if (!me) {
         return null;

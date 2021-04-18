@@ -48,13 +48,15 @@ function* removeFollower(action) {
     }
 }
 
-function loadFollowersAPI() {
+function loadFollowersAPI(data) {
     return axios.get('/user/followers');
 }
 
 function* loadFollowers(action) {
     try {
-        const result = yield call(loadFollowersAPI);
+
+        const result = yield call(loadFollowersAPI, action.data);
+
         yield put({
             type: LOAD_FOLLOWERS_SUCCESS,
             data: result.data,
