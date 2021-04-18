@@ -199,6 +199,7 @@ function followAPI(data) {
 
 function* follow(action) {
     try {
+
         const result = yield call(followAPI, action.data);
         yield put({
             type: FOLLOW_SUCCESS,

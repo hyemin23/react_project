@@ -174,8 +174,12 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
             draft.followDone = false;
             break;
         case FOLLOW_SUCCESS:
+            console.log("user 리듀서 팔로잉 데이타");
+            console.log(action.data.id);
             draft.followLoading = false;
-            draft.me.Followings.push({ id: action.data.UserId });
+            draft.me.Followings.push({
+                id: action.data.UserId
+            });
             draft.followDone = true;
             break;
         case FOLLOW_FAILURE:

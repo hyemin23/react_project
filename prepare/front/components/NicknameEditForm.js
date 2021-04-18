@@ -6,7 +6,6 @@ import useInput from '../hook/useInput';
 import { CHANGE_NICKNAME_REQUEST } from '../reducers/user';
 function NicknameEditForm() {
 
-    const { changeNicknameDone } = useSelector((state) => state.user);
     const [nickname, onChangeNickname] = useInput("");
     const dispatch = useDispatch();
 

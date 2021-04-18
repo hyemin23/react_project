@@ -14,7 +14,6 @@ const FollowButton = ({ post }) => {
     const isFollowing = me?.Followings.find((v) => v.id === post.User.id);
 
 
-
     //팔로우 버튼을 누르면 팔로잉한 사람인지 부터 확인
     const onClickButton = useCallback(() => {
         //팔로잉한 사람이라면 언팔.
@@ -23,7 +22,9 @@ const FollowButton = ({ post }) => {
                 type: UNFOLLOW_REQUEST
                 , data: post.User.id
             })
-        } else {
+        }
+        //팔로잉 하지 않은 사람이라면 팔로우
+        else {
             dispatch({
                 type: FOLLOW_REQUEST
                 , data: post.User.id
@@ -31,15 +32,17 @@ const FollowButton = ({ post }) => {
         }
     }, [isFollowing]);
 
-    if (me.id !== post.User.id) {
-        return (
-
-            <Button onClick={onClickButton}
-                loading={followLoading || unfollowLoading}>
-                {isFollowing ? "언팔로우" : "팔로우"}
-            </Button>)
+    //게시글 작성자와 현재 로그인한 유저가 같다면 null return 
+    if (post.User.id === me.id) {
+        return null;
     }
-    return null;
+    return (
+
+        <Button onClick={onClickButton}
+            loading={followLoading || unfollowLoading}>
+            {isFollowing ? "언팔로우" : "팔로우"}
+        </Button>)
+
 
 }
 FollowButton.prototype = {
