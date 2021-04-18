@@ -14,6 +14,7 @@ const FollowButton = ({ post }) => {
     const isFollowing = me?.Followings.find((v) => v.id === post.User.id);
 
 
+
     //팔로우 버튼을 누르면 팔로잉한 사람인지 부터 확인
     const onClickButton = useCallback(() => {
         //팔로잉한 사람이라면 언팔.
@@ -30,12 +31,16 @@ const FollowButton = ({ post }) => {
         }
     }, [isFollowing]);
 
+    if (me.id !== post.User.id) {
+        return (
 
-    return (
-        <Button onClick={onClickButton}
-            loading={followLoading || unfollowLoading}>
-            {isFollowing ? "언팔로우" : "팔로우"}
-        </Button>)
+            <Button onClick={onClickButton}
+                loading={followLoading || unfollowLoading}>
+                {isFollowing ? "언팔로우" : "팔로우"}
+            </Button>)
+    }
+    return null;
+
 }
 FollowButton.prototype = {
     post: PropTypes.object.isRequired

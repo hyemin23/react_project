@@ -124,4 +124,78 @@ router.post('/logout', isLoggedIn, (req, res) => {
     res.send('ok');
 });
 
+
+//팔로우 하기
+// router.patch("/:postId/follow", isLoggedIn, async (req, res, next) => {
+//     try {
+
+//         //get 메서드 봐야함
+//         //User 테이블에서 뽑아와야함
+//         await User.
+
+//     } catch (error) {
+//         console.error(error)
+//         next(error);
+//     }
+// });
+
+
+//팔로잉 하기
+// roter.patch("/:postId/unfollow", isLoggedIn, async (req, res, next) => {
+//     try {
+
+//     } catch (error) {
+//         console.error(error);
+//         next(error);
+//     }
+// });
+
+//팔로워 리스트 가져오기
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+    try {
+
+        //먼저 유저 조회
+        const user = await User.findOne({ where: { id: req.user.id } });
+
+        if (!user) {
+            return res.status(403).send("유저가 존재하지 않습니다.");
+        }
+
+        const followers = await user.getFollowers();
+
+        console.log("찾은 follwers : ", followers);
+
+        return res.status(201).send(followers);
+
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+//팔로잉 리스트 가져오기
+
+
+//닉네임 변경
+router.patch("/nickname", isLoggedIn, async (req, res, next) => {
+    try {
+
+        const result = await User.update({
+            nickname: req.body.nickname
+        }, {
+            where: {
+                id: req.user.id
+            }
+        });
+
+        console.log("닉네임 변경 후 값 : ", result);
+        //닉네임 변경
+        res.status(200).send({ nickname: req.body.nickname });
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
 module.exports = router;

@@ -1,6 +1,6 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, List, Popover, Comment } from 'antd'
-import React, { useCallback, useState } from 'react'
+import { Avatar, Button, Card, List, Popover, Comment, message } from 'antd'
+import React, { useCallback, useEffect, useState } from 'react'
 import PostImages from './PostImages';
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ function PostCard({ post }) {
     const id = useSelector((state) => state.user.me?.id);
 
     const dispatch = useDispatch();
-    const { removePostLoading } = useSelector((state) => state.post);
+    const { removePostLoading, removePostDone } = useSelector((state) => state.post);
 
     //좋아요 확인
     const liked = post.Likers.find((v) => v.id === id);
@@ -42,12 +42,18 @@ function PostCard({ post }) {
         setCommentFormOpened(prev => !prev);
     }, []);
 
+    //게시글 삭제시
     const onRemovePost = useCallback(() => {
         dispatch({
             type: REMOVE_POST_REQUEST
             , data: post.id
         });
-    }, []);
+
+
+    }, [id]);
+
+
+
     return (
         <div>
             <Card

@@ -48,13 +48,13 @@ function* removeFollower(action) {
     }
 }
 
-function loadFollowersAPI(data) {
-    return axios.get('/user/followers', data);
+function loadFollowersAPI() {
+    return axios.get('/user/followers');
 }
 
 function* loadFollowers(action) {
     try {
-        const result = yield call(loadFollowersAPI, action.data);
+        const result = yield call(loadFollowersAPI);
         yield put({
             type: LOAD_FOLLOWERS_SUCCESS,
             data: result.data,
@@ -126,7 +126,7 @@ function* loadUser(action) {
         console.error(error);
         yield put({
             type: LOAD_USER_FAILURE
-            , error: err.response.data
+            , error: error.response.data
         });
     }
 }
@@ -192,6 +192,8 @@ function* signUp(action) {
 }
 
 function followAPI(data) {
+
+    //게시글 작성자 넘겨 받기
     return axios.patch(`/user/${data}/follow`);
 }
 
