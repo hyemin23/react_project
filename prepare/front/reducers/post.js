@@ -141,8 +141,6 @@ const reducer = (state = init, action) => {
                 draft.loadPostsLoading = false;
                 draft.loadPostsError = action.error;
                 break;
-
-
             case ADD_POST_REQUEST:
                 draft.addPostLoading = true;
                 draft.addPostDone = false;
@@ -159,8 +157,6 @@ const reducer = (state = init, action) => {
                 draft.addPostLoading = false;
                 draft.addPostError = action.error;
                 break;
-
-
             case REMOVE_POST_REQUEST:
                 draft.removePostLoading = true;
                 draft.removePostDone = false;
@@ -241,9 +237,22 @@ const reducer = (state = init, action) => {
                 draft.unlikePostLoading = false;
                 draft.unlikePostError = action.error;
                 break;
-
-
-
+            case UPLOAD_IMAGES_REQUEST:
+                draft.uploadImagesLoading = true;
+                draft.uploadImagesDone = false;
+                draft.uploadImagesError = null;
+                break;
+            case UPLOAD_IMAGES_SUCCESS:
+                console.log("SUCCESS", action.data);
+                //서버에서 파일명을 보내줌
+                draft.imagePaths = action.data;
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesDone = true;
+                break;
+            case UPLOAD_IMAGES_FAILURE:
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesError = action.error;
+                break;
             default:
                 return state;
         }

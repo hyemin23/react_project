@@ -1,8 +1,8 @@
 import { Button, Form, Input } from 'antd';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hook/useInput';
-import { addPost, ADD_POST_REQUEST } from '../reducers/post';
+import { ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST } from '../reducers/post';
 
 
 
@@ -33,10 +33,30 @@ function PostForm() {
     }, [addPostDone]);
 
     //이미지 ref를 위해서 선언
-    const imageInput = useRef()
+    const imageInput = useRef();
+
+    //버튼을 클릭하면 ref로 올린 file 숨겨놓은 input 간접 클릭
     const onClickImageUpload = useCallback(() => {
         imageInput.current.click();
     }, [imageInput.current]);
+
+    const onChangeImages = useCallback((e) => {
+
+        const imageFormData = new FormData();
+        // [].forEach.call(e.target.files, (f) => {
+        //     imageFormData.append('image', f);
+        // });
+        Array.from(e.target.files, (file) => {
+            imageFormData.append("image", file);
+        });
+
+        dispatch({
+            type: UPLOAD_IMAGES_REQUEST,
+            data: imageFormData,
+        });
+    }, []);
+
+
     return (
         <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
             <Input.TextArea value={text}
@@ -45,8 +65,8 @@ function PostForm() {
                 placeholder="오늘은 어떤일이 있었나요?"
             />
             <div>
-                <input type="file" multiple hidden ref={imageInput} />
-                <Button>이미지 업로드</Button>
+                <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
+                <Button onClick={onClickImageUpload}>이미지 업로드</Button>
                 <Button type="primary" style={{ float: "right" }}
                     htmlType="submit"
                     onClick={onSubmit}
@@ -54,16 +74,16 @@ function PostForm() {
             </div>
             <div>
                 {/* 이미지 미리보기 부분 */}
-                {imagePaths.map((path) => (
-                    <div key={path} style={{ display: "inline-block" }}>
-                        <img src={path} style={{ width: "200px" }} alt={path} />
+                {imagePaths.map((v, i) => (
+                    <div key={v} style={{ display: 'inline-block' }}>
+                        <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
                         <div>
                             <Button>제거</Button>
                         </div>
                     </div>
                 ))}
             </div>
-        </Form>
+        </Form >
     )
 }
 

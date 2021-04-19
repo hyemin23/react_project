@@ -2,9 +2,36 @@ const exporess = require("express");
 const { isLoggedIn } = require("../middleware/middleware");
 const router = exporess();
 const { Post, Comment, User, Image } = require("../models");
+//폴더 생성
+const fs = require("fs");
+
+//multer는 router마다 장착을 함
+//이유 : 폼마다 이미지가 올라가느냐 안 올라가느냐 차이가 있기 떄문임.
+const multer = require("multer");
+const path = require("path");
+
+//폴더생성
+try {
+    fs.accessSync('back/uploads');
+} catch (error) {
+    console.log('uploads 폴더가 없으므로 생성합니다.');
+    fs.mkdirSync('back/uploads');
+}
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done) {
+            done(null, 'back/uploads');
+        },
+        filename(req, file, done) { // 제로초.png
+            const ext = path.extname(file.originalname); // 확장자 추출(.png)
+            const basename = path.basename(file.originalname, ext); // 제로초
+            done(null, basename + '_' + new Date().getTime() + ext); // 제로초15184712891.png
+        },
+    }),
 
 
-
+});
 //로그인 한 사람만 게시글 작성이 가능하도록
 router.post("/", isLoggedIn, async (req, res, next) => {
 
@@ -165,7 +192,19 @@ router.delete("/:postId", isLoggedIn, async (req, res, error) => {
         next(error);
 
     }
-});;
+});
+
+
+
+//이미지 업로드 multer 사용 여기는 이미지 업로드 후 실행되는 곳
+//여러장 : array 
+//파일input이 2개씩 있을 때  fills 사용
+//한 장 : single
+//json or text일경우 none (안 적어도 됨)
+router.post("/images", isLoggedIn, upload.array("image"), async (req, res, next) => {
+    console.log("files : ", req.files);
+    res.json(req.files.map((v) => v.filename));
+});
 
 
 

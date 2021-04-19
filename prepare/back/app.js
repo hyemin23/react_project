@@ -34,6 +34,10 @@ app.use(cors({
     credentials: true,
 }));
 
+//첫 번째 : localhost:3065/ 까지의 경로
+//두 번쨰 : 현재 back 폴더와 uploads폴더를 이어줌
+//console.log(path.join(__dirname, 'uploads'));
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 
 //app.use('/', express.static(path.join(__dirname, 'uploads')));
 app.use(morgan("dev")); //front에서 backend로 어떤 요청을 보내는지 파악하기 위해
@@ -48,6 +52,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
 
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구
 app.use('/posts', postsRouter);

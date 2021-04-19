@@ -120,6 +120,9 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
         case REMOVE_FOLLOWER_SUCCESS:
             console.log(action.data.UserId);
             draft.removeFollowerLoading = false;
+
+            //내 팔로우인 애들만 가져오기
+            //그럼, 삭제한 UserId
             draft.me.Followers = draft.me.Followers.filter((v) => v.id !== action.data.UserId);
             draft.removeFollowerDone = true;
             break;
