@@ -1,11 +1,13 @@
 import { message } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
 import AppLayout from '../components/AppLayout';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 
 const Home = () => {
@@ -13,8 +15,6 @@ const Home = () => {
     const dispatch = useDispatch();
     const { mainPosts, hasMorePosts, loadPostsLoading, removePostDone, removePostLoading, retweetError, retweetDone } = useSelector((state) => state.post);
     const { me } = useSelector((state) => state.user);
-
-    console.log(mainPosts);
 
     useEffect(() => {
         if (retweetError) message.warning(retweetError);
@@ -24,15 +24,6 @@ const Home = () => {
     }, [retweetDone]);
     //로그인 여부
 
-    //초기 data & 로그인 정보를 쿠키를 통해 불러오기
-    useEffect(() => {
-        dispatch({
-            type: LOAD_MY_INFO_REQUEST
-        });
-        dispatch({
-            type: LOAD_POSTS_REQUEST,
-        });
-    }, []);
 
     useEffect(() => {
         function onScroll() {
@@ -76,5 +67,26 @@ const Home = () => {
     )
 }
 
+//서버사이드 렌더링
+//매개 변수로 context를 받음
+//context안에 store가 들어있음
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+    console.log("서버사이드 렌더링 context : ", context);
+
+
+    //원리 : 밑에 dispatch 실행된 부분을 HYDRATE에게 보냄 (리듀서)
+    context.store.dispatch({
+        type: LOAD_MY_INFO_REQUEST
+    });
+    context.store.dispatch({
+        type: LOAD_POSTS_REQUEST,
+    });
+
+    //리퀘스트를 보내고 종료를 신호를 보냄 success를 요청하기 위해서
+    //next-redux-wrapper 공식문서에 이렇게 사용하라고 나옴
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+
+});
 
 export default Home;
