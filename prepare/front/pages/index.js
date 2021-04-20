@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppLayout from '../components/AppLayout';
@@ -10,7 +11,8 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 const Home = () => {
 
     const dispatch = useDispatch();
-    const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+    const { mainPosts, hasMorePosts, loadPostsLoading, removePostDone, removePostLoading } = useSelector((state) => state.post);
+
     //로그인 여부
     const { me } = useSelector((state) => state.user);
 
@@ -39,6 +41,14 @@ const Home = () => {
             window.removeEventListener('scroll', onScroll);
         };
     }, [hasMorePosts, loadPostsLoading]);
+
+
+    useEffect(() => {
+        if (removePostDone) {
+            message.success("게시글이 삭제되었습니다!");
+        }
+    }, [removePostDone && !removePostLoading]);
+
 
     //게시글
     return (

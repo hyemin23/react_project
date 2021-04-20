@@ -79,7 +79,6 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-    console.log(data);
     return axios.delete(`/post/${data}`);
 }
 
@@ -91,10 +90,11 @@ function* removePost(action) {
             type: REMOVE_POST_SUCCESS,
             data: result.data,
         });
-        // yield put({
-        //     type: REMOVE_POST_OF_ME,
-        //     data: result.data,
-        // });
+
+        yield put({
+            type: REMOVE_POST_OF_ME,
+            data: result.data,
+        });
     } catch (err) {
         console.error(err);
         yield put({

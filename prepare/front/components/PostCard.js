@@ -9,50 +9,45 @@ import PostCardContent from './PostCardContent';
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
-
-function PostCard({ post }) {
+const PostCard = ({ post }) => {
+    const dispatch = useDispatch();
+    const { removePostLoading } = useSelector((state) => state.post);
+    const [commentFormOpened, setCommentFormOpened] = useState(false);
     const id = useSelector((state) => state.user.me?.id);
 
-    const dispatch = useDispatch();
-    const { removePostLoading, removePostDone } = useSelector((state) => state.post);
-
-    //좋아요 확인
-    const liked = post.Likers.find((v) => v.id === id);
-
-    //댓글 상태
-    const [commentFormOpened, setCommentFormOpened] = useState(false);
-
-    //좋아요 버튼 클릭 시 
     const onLike = useCallback(() => {
-        dispatch({
-            type: LIKE_POST_REQUEST
-            , data: post.id
+        if (!id) {
+            return alert('로그인이 필요합니다.');
+        }
+        return dispatch({
+            type: LIKE_POST_REQUEST,
+            data: post.id,
         });
-    }, []);
-
-    //싫어요 버튼 클릭 시 
+    }, [id]);
     const onUnLike = useCallback(() => {
-        dispatch({
-            type: UNLIKE_POST_REQUEST
-            , data: post.id
+        if (!id) {
+            return alert('로그인이 필요합니다.');
+        }
+        return dispatch({
+            type: UNLIKE_POST_REQUEST,
+            data: post.id,
         });
-    }, []);
-
+    }, [id]);
     const onToggleComment = useCallback(() => {
-        setCommentFormOpened(prev => !prev);
+        setCommentFormOpened((prev) => !prev);
     }, []);
 
-    //게시글 삭제시
     const onRemovePost = useCallback(() => {
-        dispatch({
-            type: REMOVE_POST_REQUEST
-            , data: post.id
+        if (!id) {
+            return alert('로그인이 필요합니다.');
+        }
+        return dispatch({
+            type: REMOVE_POST_REQUEST,
+            data: post.id,
         });
-
-
     }, [id]);
 
-
+    const liked = post.Likers.find((v) => v.id === id);
 
     return (
         <div>

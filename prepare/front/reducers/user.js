@@ -270,7 +270,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
         //   },
         // };
         case REMOVE_POST_OF_ME:
-            draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data);
+            draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data.PostId);
             break;
         // return {
         //   ...state,

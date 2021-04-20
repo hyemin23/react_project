@@ -210,8 +210,6 @@ router.delete("/:postId", isLoggedIn, async (req, res, error) => {
 
         //시퀄라이즈에서는 제거할 때 destroy를 사용함
         //내가 쓴 게시글을 지우기 위해 
-
-        console.log("게시글 삭제 라우트 들어옴");
         console.log(req.params.postId);
         await Post.destroy({
             where: {
@@ -220,7 +218,7 @@ router.delete("/:postId", isLoggedIn, async (req, res, error) => {
             }
         });
 
-        res.send({ PostId: req.params.postId });
+        res.send({ PostId: parseInt(req.params.postId) });
 
     } catch (error) {
         console.log(error);
