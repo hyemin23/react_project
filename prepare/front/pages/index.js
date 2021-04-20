@@ -11,10 +11,18 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 const Home = () => {
 
     const dispatch = useDispatch();
-    const { mainPosts, hasMorePosts, loadPostsLoading, removePostDone, removePostLoading } = useSelector((state) => state.post);
-
-    //로그인 여부
+    const { mainPosts, hasMorePosts, loadPostsLoading, removePostDone, removePostLoading, retweetError, retweetDone } = useSelector((state) => state.post);
     const { me } = useSelector((state) => state.user);
+
+    console.log(mainPosts);
+
+    useEffect(() => {
+        if (retweetError) message.warning(retweetError);
+    }, [retweetError]);
+    useEffect(() => {
+        if (retweetDone) message.success("리트윗 성공");
+    }, [retweetDone]);
+    //로그인 여부
 
     //초기 data & 로그인 정보를 쿠키를 통해 불러오기
     useEffect(() => {
@@ -28,10 +36,12 @@ const Home = () => {
 
     useEffect(() => {
         function onScroll() {
-            if ((window.scrollY + document.documentElement.clientHeight) > document.documentElement.scrollHeight - 500) {
+            if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
                 if (hasMorePosts && !loadPostsLoading) {
+                    const lastId = mainPosts[mainPosts.length - 1]?.id;
                     dispatch({
                         type: LOAD_POSTS_REQUEST,
+                        lastId,
                     });
                 }
             }
@@ -40,7 +50,7 @@ const Home = () => {
         return () => {
             window.removeEventListener('scroll', onScroll);
         };
-    }, [hasMorePosts, loadPostsLoading]);
+    }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
 
     useEffect(() => {

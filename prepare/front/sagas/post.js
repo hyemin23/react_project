@@ -18,6 +18,9 @@ import {
     REMOVE_POST_FAILURE,
     REMOVE_POST_REQUEST,
     REMOVE_POST_SUCCESS,
+    RETWEET_FAILURE,
+    RETWEET_REQUEST,
+    RETWEET_SUCCESS,
     UNLIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST,
     UNLIKE_POST_SUCCESS,
@@ -27,13 +30,15 @@ import {
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
-function loadPostsAPI(data) {
-    return axios.get('/posts');
+
+//쿼리 스트링 방식
+function loadPostsAPI(lastId) {
+    return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
-function* loadPosts() {
+function* loadPosts(action) {
     try {
-        const result = yield call(loadPostsAPI);
+        const result = yield call(loadPostsAPI, action.lastId);
         //yield delay(1000);
 
         yield put({
@@ -193,6 +198,26 @@ function* uploadImages(action) {
         })
     }
 }
+
+
+function retweetAPI(data) {
+    return axios.post(`/post/${data}/retweet`);
+}
+function* retweet(action) {
+    try {
+        const result = yield call(retweetAPI, action.data);
+        yield put({
+            type: RETWEET_SUCCESS
+            , data: result.data
+        });
+    } catch (error) {
+        console.error(error);
+        yield put({
+            type: RETWEET_FAILURE
+            , error: error.response.data
+        });
+    }
+}
 function* watchLoadPosts() {
     yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -217,7 +242,10 @@ function* watchUnLike() {
 function* watchUploadImages() {
     yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
+function* watchRetweet() {
+    yield takeLatest(RETWEET_REQUEST, retweet);
 
+}
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
@@ -227,5 +255,6 @@ export default function* postSaga() {
         fork(watchLike),
         fork(watchUnLike),
         fork(watchUploadImages),
+        fork(watchRetweet),
     ]);
 }

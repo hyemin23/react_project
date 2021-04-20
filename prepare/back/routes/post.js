@@ -241,4 +241,93 @@ router.post("/images", isLoggedIn, upload.array("image"), async (req, res, next)
 
 
 
+//리트윗
+router.post("/:postId/retweet", isLoggedIn, async (req, res, error) => {
+    try {
+
+        //그 게시글의 리트윗한 게시글을 찾는다 
+        const post = await Post.findOne({
+            where: { id: req.params.postId },
+            include: [{
+                model: Post
+                , as: "Retweet"
+            }]
+        });
+
+        //게시글이 존재하지 않는 경우
+        if (!post) {
+            return res.status(403).send("존재하지 않는 게시글입니다.");
+        }
+
+        //내가 쓴 게시글이거나 내 글을 리트윗하는 경우
+        if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+            return res.status(403).send("자신의 글을 리트윗할 수 없습니다!");
+        }
+
+        //리트윗 아이디가 있으면 RetweetId로 없으면 해당 게시글 번호 사용
+        const retweetTargetId = post.RetweetId || post.id;
+
+        //리트윗 했는지 검사
+        const exPost = await Post.findOne({
+            where: {
+                UserId: req.user.id
+                , RetweetId: retweetTargetId
+            }
+        });
+
+        //이미 리트윗 한 게시글이라면
+        if (exPost) {
+            return res.status(403).send("이미 리트윗 했습니다.");
+        }
+
+        //리트윗 한 게시글이 없다면 리트윗 게시글 저장
+        const retweet = await Post.create({
+            UserId: req.user.id
+            , RetweetId: retweetTargetId
+            //content는 필수값이라 일단 넣어줌
+            , content: "retweet"
+        })
+
+        //어떤 게시글을 리트윗했는지 알려주기 위함
+        //나중에 구조가 복잡해주면 라우터를 하나 더 파서 쪼개줘야함
+        //댓글 같은 경우 게시글 가져온 후 댓글을 따로 가져오거나 댓글을열었을 때 가져오거나 해줘야함
+        const retweetWithPrevPost = await Post.findOne({
+            where: { id: retweet.id },
+            include: [{
+                model: Post,
+                as: 'Retweet',
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname'],
+                }, {
+                    model: Image,
+                }]
+            }, {
+                model: User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname'],
+                }],
+            }, {
+                model: User
+                , as: "Likers"
+                , attributes: ["id"]
+            }],
+        });
+
+        res.status(201).send(retweetWithPrevPost);
+
+    } catch (error) {
+        console.error(error);
+
+    }
+});
+
+
+
 module.exports = router;

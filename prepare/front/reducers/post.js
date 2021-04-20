@@ -261,6 +261,23 @@ const reducer = (state = init, action) => {
             case REMOVE_IMAGE:
                 draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
                 break;
+
+            //리트윗
+            case RETWEET_REQUEST:
+                draft.retweetLoading = true;
+                draft.retweetDone = false;
+                draft.retweetError = null;
+                break;
+            case RETWEET_SUCCESS:
+                draft.retweetLoading = false;
+                draft.retweetDone = true;
+                //리트윗 게시글도 넣어준다
+                draft.mainPosts.unshift(action.data);
+                break;
+            case RETWEET_FAILURE:
+                draft.retweetLoading = false;
+                draft.retweetError = action.error;
+                break;
             default:
                 return state;
         }
