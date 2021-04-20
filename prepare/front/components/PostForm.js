@@ -1,8 +1,8 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hook/useInput';
-import { ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST } from '../reducers/post';
+import { ADD_POST_REQUEST, REMOVE_IMAGE, UPLOAD_IMAGES_REQUEST } from '../reducers/post';
 
 
 
@@ -12,17 +12,26 @@ function PostForm() {
 
     const dispatch = useDispatch();
 
-
-
     const onSubmit = useCallback(() => {
-        dispatch({
-            type: ADD_POST_REQUEST
-            , data: {
-                text
-            }
-        });
 
-    }, [text]);
+        if (!text || !text.trim()) {
+            return message.warn("게시글을 작성해주세요.");
+        }
+
+        //content와 이미지 같이 업로드
+        const formData = new FormData();
+
+        //이미지의 주소만
+        imagePaths.forEach((file) => {
+            formData.append("image", file);
+        });
+        formData.append("content", text);
+
+        return dispatch({
+            type: ADD_POST_REQUEST
+            , data: formData
+        });
+    }, [imagePaths, text]);
 
     //setText부분은 서버단에서 실패했을 경우를 대비해서 
     useEffect(() => {
@@ -56,6 +65,13 @@ function PostForm() {
         });
     }, []);
 
+    //이미지 삭제
+    const onRemoveImage = useCallback((idex) => () => {
+        dispatch({
+            type: REMOVE_IMAGE
+            , data: idex,
+        });
+    }, []);
 
     return (
         <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
@@ -69,8 +85,7 @@ function PostForm() {
                 <Button onClick={onClickImageUpload}>이미지 업로드</Button>
                 <Button type="primary" style={{ float: "right" }}
                     htmlType="submit"
-                    onClick={onSubmit}
-                >짹짹</Button>
+                >작성</Button>
             </div>
             <div>
                 {/* 이미지 미리보기 부분 */}
@@ -78,7 +93,7 @@ function PostForm() {
                     <div key={v} style={{ display: 'inline-block' }}>
                         <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
                         <div>
-                            <Button>제거</Button>
+                            <Button onClick={onRemoveImage(i)}>제거</Button>
                         </div>
                     </div>
                 ))}

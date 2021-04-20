@@ -51,13 +51,13 @@ function* loadPosts() {
 }
 
 function addPostAPI(data) {
-    console.log("addPostAPI : ", data);
-    return axios.post('/post', { content: data });
+    //form data는 바로 넣어주어야함 "{}" 로 감싸면 절대 안됨
+    return axios.post('/post', data);
 }
 
 function* addPost(action) {
     try {
-        const result = yield call(addPostAPI, action.data.text);
+        const result = yield call(addPostAPI, action.data);
         //yield delay(1000);
         //const id = shortId.generate();
 

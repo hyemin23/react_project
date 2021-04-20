@@ -32,8 +32,11 @@ const upload = multer({
 
 
 });
+
+
 //로그인 한 사람만 게시글 작성이 가능하도록
-router.post("/", isLoggedIn, async (req, res, next) => {
+//게시글만 존재하고 이미지가 없는 경우
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
 
     try {
 
@@ -42,6 +45,23 @@ router.post("/", isLoggedIn, async (req, res, next) => {
             content: req.body.content,
             UserId: req.user.id,
         });
+
+        //image가 존재하는 경우
+        if (req.body.image) {
+            //image가 배열 즉, 여러장일 경우
+            if (Array.isArray(req.body.image)) {
+                //DB에 한 번에 저장하기 위하여 Promise.all사용
+                //Image.create는 Promise임.
+                const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+
+                await post.addImages(images);
+            }
+            //이미지를 한 장만 올리는 경우
+            else {
+                const image = await Image.create({ src: req.body.image })
+                await post.addImages(image);
+            }
+        }
 
         //console.log("생성된 post 객체는 : ", post);
 

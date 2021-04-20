@@ -8,7 +8,6 @@ function PostImages({ images }) {
     const [showImagesZoom, setShowImagesZoom] = useState(false);
 
     const onZoom = useCallback(() => {
-        console.log("onZoom");
         setShowImagesZoom(true);
     }, []);
 
@@ -20,7 +19,7 @@ function PostImages({ images }) {
     if (images.length === 1) {
         return (
             <>
-                <img src={images[0].src} alt={images[0].src} onClick={onZoom} />
+                <img src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
                 {
                     showImagesZoom && <ImagesZoom image={images} onClose={onClose} />
                 }
@@ -33,8 +32,8 @@ function PostImages({ images }) {
         return (
             <>
                 <div>
-                    <img src={images[0].src} alt={images[0].src} onClick={onZoom} style={{ width: "50%", display: "inline-block" }} />
-                    <img src={images[1].src} alt={images[1].src} onClick={onZoom} style={{ width: "50%", display: "inline-block" }} />
+                    <img src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} onClick={onZoom} style={{ width: "50%", display: "inline-block" }} />
+                    <img src={`http://localhost:3065/${images[1].src}`} alt={images[1].src} onClick={onZoom} style={{ width: "50%", display: "inline-block" }} />
                 </div>
             </>
         )
@@ -44,7 +43,7 @@ function PostImages({ images }) {
     return (
         <>
             <div>
-                <img rol="presentation" src={images[0].src} alt={images[0].src} onClick={onZoom}
+                <img rol="presentation" src={`http://localhost:3065/${images[0].src}`} alt={`http://localhost:3065/${images[0].src}`} onClick={onZoom}
                     style={{ width: "50%" }}
                 />
                 <div

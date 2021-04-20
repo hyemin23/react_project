@@ -13,8 +13,6 @@ const Home = () => {
     const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
     //로그인 여부
     const { me } = useSelector((state) => state.user);
-    console.log("인덱스 페이지 me ");
-    console.log(me);
 
     //초기 data & 로그인 정보를 쿠키를 통해 불러오기
     useEffect(() => {

@@ -100,6 +100,9 @@ export const RETWEET_REQUEST = 'RETWEET_REQUEST';
 export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
 export const RETWEET_FAILURE = 'RETWEET_FAILURE';
 
+
+//이미지 지우는 건 동기 액션 
+//하나만 만들면 됨
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 export const addPost = (data) => ({
@@ -152,6 +155,8 @@ const reducer = (state = init, action) => {
                 //앞에다가 더미데이타 추가를 함 그래야 게시글 위에 올라가서 반복문으로 내려오는 구조
                 //draft.mainPosts.unshift(dummyPost(action.data));
                 draft.mainPosts.unshift(action.data);
+                //이미지 경로 초기화
+                draft.imagePaths = [];
                 break;
             case ADD_POST_FAILURE:
                 draft.addPostLoading = false;
@@ -252,6 +257,9 @@ const reducer = (state = init, action) => {
             case UPLOAD_IMAGES_FAILURE:
                 draft.uploadImagesLoading = false;
                 draft.uploadImagesError = action.error;
+                break;
+            case REMOVE_IMAGE:
+                draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
                 break;
             default:
                 return state;
