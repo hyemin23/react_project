@@ -1,7 +1,7 @@
 const exporess = require("express");
 const { isLoggedIn } = require("../middleware/middleware");
 const router = exporess();
-const { Post, Comment, User, Image } = require("../models");
+const { Post, Comment, User, Image, Hashtag } = require("../models");
 //폴더 생성
 const fs = require("fs");
 
@@ -40,12 +40,27 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
 
     try {
 
+        //해시태그 
+        const hashtags = req.body.content.match(/#[^\s#]+/g);
+
         //deserialize에서 생상한 req.user로 user 접근 가능
         const post = await Post.create({
             content: req.body.content,
             UserId: req.user.id,
         });
 
+        //해시 태그 
+        //배열 인덱스에 접근해서 인덱스안에 요소들을 잘라버림
+        if (hashtags) {
+            //create 가 아닌 findOrCreate로 등록한다. 중복 방지를 위해
+            // findOrCreate : 없으면 등록하고 있으면 가져옴
+            const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({
+                where: { name: tag.slice(1).toLowerCase() }
+            })));
+            //result의 결과물의 값으로는 [[노드,true],[리액트,true]] 이런 꼴
+            // 첫 번째 값만 저장하기 위해 [0]번째 인덱스로 접근함
+            await post.addHashtags(result.map((v) => v[0]));
+        }
         //image가 존재하는 경우
         if (req.body.image) {
             //image가 배열 즉, 여러장일 경우
@@ -53,7 +68,7 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
                 //DB에 한 번에 저장하기 위하여 Promise.all사용
                 //Image.create는 Promise임.
                 const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-
+                //post 테이블에 저장
                 await post.addImages(images);
             }
             //이미지를 한 장만 올리는 경우
