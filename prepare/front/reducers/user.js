@@ -1,6 +1,9 @@
 import produce from '../utill/produce';
 
 export const initialState = {
+    loadMyInfoLoading: false, // 유저 정보 가져오기 시도중
+    loadMyInfoDone: false,
+    loadMyInfoError: null,
     loadUserLoading: false, // 유저 정보 가져오기 시도중
     loadUserDone: false,
     loadUserError: null,
@@ -32,8 +35,7 @@ export const initialState = {
     removeFollowerDone: false,
     removeFollowerError: null,
     me: null,
-    signUpData: {},
-    loginData: {},
+    userInfo: null,
 };
 
 //사용자 정보 가져오기 (새로고침)
@@ -165,7 +167,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
             break;
         case LOAD_USER_SUCCESS:
             draft.loadUserLoading = false;
-            draft.me = action.data;
+            draft.userInfo = action.data;
             draft.loadUserDone = true;
             break;
         case LOAD_USER_FAILURE:
@@ -178,8 +180,6 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
             draft.followDone = false;
             break;
         case FOLLOW_SUCCESS:
-            console.log("user 리듀서 팔로잉 데이타");
-            console.log(action.data.id);
             draft.followLoading = false;
             draft.me.Followings.push({
                 id: action.data.UserId

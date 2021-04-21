@@ -12,8 +12,10 @@ const { isLoggedIn, isNotLoggedIn } = require("../middleware/middleware");
 
 //로그인 & 사용자 불러오기
 router.get('/', async (req, res, next) => { // GET /user
+    console.log("헤더 정보는 아래와 같습니다.");
+    console.log(req.headers);
+
     try {
-        console.log("로그인 사용자 정보 불러오기 ");
         //req에 담긴 user는 미들웨어에거 전해줌 
         //새로고침 할 때 마다 쿠키에 남아있는 정보로 로그인이 유지되게끔 만들어줌
         //단, 로그인을 안 한 상태라면 req.user에서 error가 발생할 것임.
@@ -49,6 +51,56 @@ router.get('/', async (req, res, next) => { // GET /user
     }
 });
 
+//특정 사용자 정보 가져오는 라우터 
+router.get("/:id", async (req, res, next) => {
+    try {
+        console.log("사용자 정보 가져오는 라우터 등장", req.params.id);
+
+        const fullUserWithoutPassword = await User.findOne({
+            where: { id: req.params.id },
+            attributes: {
+                exclude: ['password']
+            },
+            include: [{
+                model: Post,
+                attributes: ['id'],
+            }, {
+                model: User,
+                as: 'Followings',
+                attributes: ['id'],
+            }, {
+                model: User,
+                as: 'Followers',
+                attributes: ['id'],
+            }]
+        });
+
+        if (fullUserWithoutPassword) {
+            //시퀄라이즈에서 보내준 data 는 json이 아니라 json으로 바꿔줌.
+            const data = fullUserWithoutPassword.toJSON();
+
+            //그 data안의 원하는 정보만 빼냄 이유 : 모든 정보들이 보내지면 위험
+            data.Posts = data.Posts.length;
+            data.Followings = data.Followings.length;
+            data.Followers = data.Followers.length;
+
+            console.log("갈아끼운 data 들은 ");
+            console.log(data);
+
+            res.status(200).json(data);
+
+
+
+            return res.status(200).send(data);
+        } else {
+            return res.status(404).send("존재하지 않는 사용자입니다.");
+        }
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
 
 //로그인 라우터
 //isNotLoggedIn 미들웨어가 통과되어야 다음 미들웨어가 동작함.
@@ -211,7 +263,6 @@ router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
 });
 
 
-
 //팔로워 리스트 가져오기
 router.get("/followers", isLoggedIn, async (req, res, next) => {
     try {
@@ -258,6 +309,7 @@ router.get("/followings", isLoggedIn, async (req, res, next) => {
         next(error);
     }
 });
+
 
 //닉네임 변경
 router.patch("/nickname", isLoggedIn, async (req, res, next) => {

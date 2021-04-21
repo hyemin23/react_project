@@ -236,6 +236,24 @@ function* unfollow(action) {
     }
 }
 
+function aboutAPI(data) {
+    return axios.get(`/user/${data}`);
+}
+function* about(action) {
+    try {
+        const result = yield call(aboutAPI, action.data);
+        yield put({
+            type: LOAD_USER_SUCCESS
+            , data: result.data
+        })
+    } catch (error) {
+        console.error(error);
+        yield ({
+            type: LOAD_USER_FAILURE
+            , error: error.response.data
+        })
+    }
+}
 function* watchRemoveFollower() {
     yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
 }
@@ -275,7 +293,9 @@ function* watchLogOut() {
 function* watchSignUp() {
     yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
-
+function* watchAbout() {
+    yield takeLatest(LOAD_USER_REQUEST, about);
+}
 export default function* userSaga() {
     yield all([
         fork(watchRemoveFollower),
@@ -288,5 +308,6 @@ export default function* userSaga() {
         fork(watchLogIn),
         fork(watchLogOut),
         fork(watchSignUp),
+        fork(watchAbout),
     ]);
 }
