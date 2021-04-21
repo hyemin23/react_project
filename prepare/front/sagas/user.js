@@ -111,24 +111,23 @@ function* changeNickname(action) {
 }
 
 //get은 data가 존재하지않음. 2번째 인자는 withCredentials 값인데 현재는 index.js에 지정해줌
-function loadUserAPI() {
-    return axios.get('/user');
-}
 
+function loadUserAPI(data) {
+    console.log("로드 유저 사가 api")
+    return axios.get(`/user/${data}`);
+}
 function* loadUser(action) {
     try {
-
         const result = yield call(loadUserAPI, action.data);
-
         yield put({
-            type: LOAD_USER_SUCCESS
-            , data: result.data
+            type: LOAD_USER_SUCCESS,
+            data: result.data,
         });
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
         yield put({
-            type: LOAD_USER_FAILURE
-            , error: error.response.data
+            type: LOAD_USER_FAILURE,
+            error: err.response.data,
         });
     }
 }

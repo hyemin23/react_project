@@ -4,6 +4,7 @@ import produce from "../utill/produce";
 
 export const init = {
     mainPosts: [],
+    singlePost: null,
     imagePaths: [],
     hasMorePosts: true,
     likePostLoading: false,
@@ -24,6 +25,9 @@ export const init = {
     addCommentLoading: false,
     addCommentDone: false,
     addCommentError: null,
+    loadPostLoading: false,
+    loadPostDone: false,
+    loadPostError: null,
     uploadImagesLoading: false,
     uploadImagesDone: false,
     uploadImagesError: null,
@@ -80,6 +84,13 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 
+//단일 게시물
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
+
+//여러 게시글
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
@@ -129,6 +140,22 @@ export const addComment = (data) => ({
 const reducer = (state = init, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
+            case LOAD_POST_REQUEST:
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break;
+            case LOAD_POST_SUCCESS:
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                draft.singlePost = action.data;
+                break;
+            case LOAD_POST_FAILURE:
+                draft.loadPostLoading = false;
+                draft.loadPostError = action.error;
+                break;
+
+
             case LOAD_POSTS_REQUEST:
                 draft.loadPostsLoading = true;
                 draft.loadPostsDone = false;

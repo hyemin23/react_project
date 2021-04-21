@@ -15,6 +15,9 @@ import {
     LOAD_POSTS_FAILURE,
     LOAD_POSTS_REQUEST,
     LOAD_POSTS_SUCCESS,
+    LOAD_POST_FAILURE,
+    LOAD_POST_REQUEST,
+    LOAD_POST_SUCCESS,
     REMOVE_POST_FAILURE,
     REMOVE_POST_REQUEST,
     REMOVE_POST_SUCCESS,
@@ -218,6 +221,31 @@ function* retweet(action) {
         });
     }
 }
+
+function loadPostAPI(data) {
+    console.log("loadPostAPi 사가");
+    return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
+
+    try {
+        console.log("loadPost 사가 들어옴 ");
+        const result = yield call(loadPostAPI, action.data);
+        yield put({
+            type: LOAD_POST_SUCCESS
+            , data: result.data
+        });
+
+    } catch (error) {
+        console.log("에러 내용은 ");
+        console.error(error);
+        yield put({
+            type: LOAD_POST_FAILURE
+            , error: error.response.data
+        });
+    }
+}
 function* watchLoadPosts() {
     yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -246,6 +274,10 @@ function* watchRetweet() {
     yield takeLatest(RETWEET_REQUEST, retweet);
 
 }
+
+function* watchLoadPost() {
+    yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
@@ -256,5 +288,6 @@ export default function* postSaga() {
         fork(watchUnLike),
         fork(watchUploadImages),
         fork(watchRetweet),
+        fork(watchLoadPost),
     ]);
 }

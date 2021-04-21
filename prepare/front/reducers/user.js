@@ -38,6 +38,8 @@ export const initialState = {
     userInfo: null,
 };
 
+
+
 //사용자 정보 가져오기 (새로고침)
 export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
