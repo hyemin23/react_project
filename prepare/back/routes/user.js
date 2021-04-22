@@ -51,49 +51,77 @@ router.get('/', async (req, res, next) => { // GET /user
     }
 });
 
-//특정 사용자 정보 가져오는 라우터 
-router.get("/:id", async (req, res, next) => {
-    try {
-        console.log("사용자 정보 가져오는 라우터 등장", req.params.id);
 
-        const fullUserWithoutPassword = await User.findOne({
-            where: { id: req.params.id },
-            attributes: {
-                exclude: ['password']
-            },
-            include: [{
-                model: Post,
-                attributes: ['id'],
-            }, {
-                model: User,
-                as: 'Followings',
-                attributes: ['id'],
-            }, {
-                model: User,
-                as: 'Followers',
-                attributes: ['id'],
-            }]
+
+//팔로워 리스트 가져오기
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+    try {
+
+        //먼저 유저 조회
+        const user = await User.findOne({ where: { id: req.user.id } });
+
+        if (!user) {
+            return res.status(403).send("유저가 존재하지 않습니다.");
+        }
+
+        const followers = await user.getFollowers({
+            limit: 3
         });
 
-        if (fullUserWithoutPassword) {
-            //시퀄라이즈에서 보내준 data 는 json이 아니라 json으로 바꿔줌.
-            const data = fullUserWithoutPassword.toJSON();
+        console.log("찾은 follwers : ", followers);
 
-            //그 data안의 원하는 정보만 빼냄 이유 : 모든 정보들이 보내지면 위험
-            data.Posts = data.Posts.length;
-            data.Followings = data.Followings.length;
-            data.Followers = data.Followers.length;
-
-            console.log("갈아끼운 data 들은 ");
-            console.log(data);
-
-            res.status(200).json(data);
+        return res.status(201).send(followers);
 
 
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
 
-            return res.status(200).send(data);
+//팔로잉 리스트 가져오기
+router.get("/followings", isLoggedIn, async (req, res, next) => {
+    try {
+
+        //먼저 유저 조회
+        const user = await User.findOne({ where: { id: req.user.id } });
+
+        if (!user) {
+            return res.status(403).send("유저가 존재하지 않습니다.");
+        }
+
+        const followings = await user.getFollowings({
+            limit: 3
+        });
+        console.log("찾은 팔로잉 목록 : ", followings);
+
+        return res.status(201).send(followings);
+
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+
+//닉네임 변경
+router.patch("/nickname", isLoggedIn, async (req, res, next) => {
+    try {
+
+        const result = await User.update({
+            nickname: req.body.nickname
+        }, {
+            where: {
+                id: req.user.id
+            }
+        });
+
+        //닉네임 변경
+        if (result === 1) {
+            res.status(200).send({ nickname: req.body.nickname });
         } else {
-            return res.status(404).send("존재하지 않는 사용자입니다.");
+            res.status(500).send("닉네임 변경 오류");
         }
 
     } catch (error) {
@@ -101,6 +129,7 @@ router.get("/:id", async (req, res, next) => {
         next(error);
     }
 });
+
 
 //로그인 라우터
 //isNotLoggedIn 미들웨어가 통과되어야 다음 미들웨어가 동작함.
@@ -175,6 +204,7 @@ router.post('/logout', isLoggedIn, (req, res) => {
     req.session.destroy();
     res.send('ok');
 });
+
 
 
 //팔로우 하기
@@ -262,72 +292,50 @@ router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
     }
 });
 
-
-//팔로워 리스트 가져오기
-router.get("/followers", isLoggedIn, async (req, res, next) => {
+//특정 사용자 정보 가져오는 라우터 
+router.get("/:id", async (req, res, next) => {
     try {
 
-        //먼저 유저 조회
-        const user = await User.findOne({ where: { id: req.user.id } });
+        console.log("사용자 정보 가져오는 라우터 등장 ", req.params.id);
 
-        if (!user) {
-            return res.status(403).send("유저가 존재하지 않습니다.");
-        }
-
-        const followers = await user.getFollowers();
-
-        console.log("찾은 follwers : ", followers);
-
-        return res.status(201).send(followers);
-
-
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-});
-
-//팔로잉 리스트 가져오기
-router.get("/followings", isLoggedIn, async (req, res, next) => {
-    try {
-
-        //먼저 유저 조회
-        const user = await User.findOne({ where: { id: req.user.id } });
-
-        if (!user) {
-            return res.status(403).send("유저가 존재하지 않습니다.");
-        }
-
-        const followings = await user.getFollowings();
-        console.log("찾은 팔로잉 목록 : ", followings);
-
-        return res.status(201).send(followings);
-
-
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-});
-
-
-//닉네임 변경
-router.patch("/nickname", isLoggedIn, async (req, res, next) => {
-    try {
-
-        const result = await User.update({
-            nickname: req.body.nickname
-        }, {
-            where: {
-                id: req.user.id
-            }
+        const fullUserWithoutPassword = await User.findOne({
+            where: { id: req.params.id },
+            attributes: {
+                exclude: ['password']
+            },
+            include: [{
+                model: Post,
+                attributes: ['id'],
+            }, {
+                model: User,
+                as: 'Followings',
+                attributes: ['id'],
+            }, {
+                model: User,
+                as: 'Followers',
+                attributes: ['id'],
+            }]
         });
 
-        //닉네임 변경
-        if (result === 1) {
-            res.status(200).send({ nickname: req.body.nickname });
+        if (fullUserWithoutPassword) {
+            //시퀄라이즈에서 보내준 data 는 json이 아니라 json으로 바꿔줌.
+            const data = fullUserWithoutPassword.toJSON();
+
+            //그 data안의 원하는 정보만 빼냄 이유 : 모든 정보들이 보내지면 위험
+            data.Posts = data.Posts.length;
+            data.Followings = data.Followings.length;
+            data.Followers = data.Followers.length;
+
+            console.log("갈아끼운 data 들은 ");
+            console.log(data);
+
+            res.status(200).json(data);
+
+
+
+            return res.status(200).send(data);
         } else {
-            res.status(500).send("닉네임 변경 오류");
+            return res.status(404).send("존재하지 않는 사용자입니다.");
         }
 
     } catch (error) {
@@ -335,4 +343,5 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
         next(error);
     }
 });
+
 module.exports = router;

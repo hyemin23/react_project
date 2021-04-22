@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import { StopOutlined } from "@ant-design/icons";
 import { useDispatch } from 'react-redux';
 import { REMOVE_FOLLOWER_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
-function FollowList({ header, data }) {
+function FollowList({ header, data, onClick, loading }) {
 
+    console.log("loading 은 ", loading);
     const dispatch = useDispatch();
 
     //고차함수 id값을 함수가 함수를 반환함.
@@ -36,7 +37,7 @@ function FollowList({ header, data }) {
                 style={{
                     textAlign: "center", margin: "10px 0"
                 }}>
-                <Button>더보기</Button>
+                <Button onClick={onClick} loading={loading}>더보기</Button>
             </div>
             }
             bordered
@@ -59,6 +60,8 @@ function FollowList({ header, data }) {
 
 FollowList.propTypes = {
     header: PropTypes.string.isRequired,
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    onClick: PropTypes.func.isRequired
+    , loading: PropTypes.bool.isRequired
 }
 export default FollowList
